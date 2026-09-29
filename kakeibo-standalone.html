@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>가계부</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="가계부"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADn0lEQVR4nO3d4XHbRhCG4XUmnSS1xMXE5aSZ9JJi8oMzHo/kj6YgENy9e54KcIcXexJESV/++Ovvgp/57dUXQF/iIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB9GwOP77959XX8JnDVrCpDhu2zpoc9+btYTfX30BD5mym4+7rejPr99efSH3DJgc78sY2sq4hXSPI21f8219b+JCvrT9I7WP7Frzsfzd0LU0nRydn6cnabjkdpPjo3vU8IF7Y+6Kek2OA09PwwfuR6NX1CuOYw9Nn91849iFmRwM0C6OZYbH9LFRDeOoJfpYoIzqGUf126YLNFxy0ziOaTI8mlzG5/WNY+jhssaBctM3jhrYx0plVPM4qvHGnaXzArvHccxLhsfLT7TTDYhjxOGy2IFyMyCOat/HkmXUlDhqwlZ+yIjljInjmAuGx3pfanw3KY6Gh8uqB8rNpDiqWR9rl1Hj4uBK8+JoMjyWHxs1MY5q0McOZdTQOGrgRo+74JobxzGnDI+Fv3d9Y3AcLzlcNjlQbgbHUZf3sVUZNT2Oar/1zS/vvvFxHDP6d40us0IcFxwuux0oNyvEUU/uY88yapk4eIZ14njS8Nh2bNRKcdQT+ti5jFosjmpwY15+ASdaLY5jfjohNvze9Y0F4zjlcNn8QLlZMI76dB/KuFkzjrr8Vq1XRk35C8aX8XXGj5adHHXh07zk2Ki146hLbtuqZdTycdSTb97CZdQOcXDYFnE86flee2zUJnHUE27k8mXUPnFwwEZxnPis7zA2aqs46qSbukkZtVsc9elbu08ZtWEcPG7HOA4//VuNjdozjjp0m3cro7aNoz54szcsoxr+j7f7FviR+qDO9p0c/JI4iMRBJA4icRCJg0gcROIgEgeROIiGvT4/1+Mv4we98z6RyUEkDiJxEImDSBxE4iASB5E4iMRBJA6iYa/Pffr8SiYHkTiIxEEkDiJxEImDSBxE4iASB5E4iIa9Pj+XT5/fZ3IQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg2jrjwlyn8lBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIj+BzCx/LOI3MzDAAAAAElFTkSuQmCC"><link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADn0lEQVR4nO3d4XHbRhCG4XUmnSS1xMXE5aSZ9JJi8oMzHo/kj6YgENy9e54KcIcXexJESV/++Ovvgp/57dUXQF/iIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB9GwOP77959XX8JnDVrCpDhu2zpoc9+btYTfX30BD5mym4+7rejPr99efSH3DJgc78sY2sq4hXSPI21f8219b+JCvrT9I7WP7Frzsfzd0LU0nRydn6cnabjkdpPjo3vU8IF7Y+6Kek2OA09PwwfuR6NX1CuOYw9Nn91849iFmRwM0C6OZYbH9LFRDeOoJfpYoIzqGUf126YLNFxy0ziOaTI8mlzG5/WNY+jhssaBctM3jhrYx0plVPM4qvHGnaXzArvHccxLhsfLT7TTDYhjxOGy2IFyMyCOat/HkmXUlDhqwlZ+yIjljInjmAuGx3pfanw3KY6Gh8uqB8rNpDiqWR9rl1Hj4uBK8+JoMjyWHxs1MY5q0McOZdTQOGrgRo+74JobxzGnDI+Fv3d9Y3AcLzlcNjlQbgbHUZf3sVUZNT2Oar/1zS/vvvFxHDP6d40us0IcFxwuux0oNyvEUU/uY88yapk4eIZ14njS8Nh2bNRKcdQT+ti5jFosjmpwY15+ASdaLY5jfjohNvze9Y0F4zjlcNn8QLlZMI76dB/KuFkzjrr8Vq1XRk35C8aX8XXGj5adHHXh07zk2Ki146hLbtuqZdTycdSTb97CZdQOcXDYFnE86flee2zUJnHUE27k8mXUPnFwwEZxnPis7zA2aqs46qSbukkZtVsc9elbu08ZtWEcPG7HOA4//VuNjdozjjp0m3cro7aNoz54szcsoxr+j7f7FviR+qDO9p0c/JI4iMRBJA4icRCJg0gcROIgEgeROIiGvT4/1+Mv4we98z6RyUEkDiJxEImDSBxE4iASB5E4iMRBJA6iYa/Pffr8SiYHkTiIxEEkDiJxEImDSBxE4iASB5E4iIa9Pj+XT5/fZ3IQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg2jrjwlyn8lBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIj+BzCx/LOI3MzDAAAAAElFTkSuQmCC">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f5f2;--card:#fff;--ink:#1d2731;--mute:#66727e;--line:#dde1dd;--ai:#23466b;--aif:#fff;--ok:#4b7a4f;--bad:#b23b2b;--soft:#e9eef3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181e;--card:#1b232b;--ink:#e8edf1;--mute:#93a0ac;--line:#2b3641;--ai:#7fa8d4;--aif:#0f1a25;--ok:#8fc194;--bad:#e5806f;--soft:#242f3a}}
+:root[data-theme="dark"]{--bg:#12181e;--card:#1b232b;--ink:#e8edf1;--mute:#93a0ac;--line:#2b3641;--ai:#7fa8d4;--aif:#0f1a25;--ok:#8fc194;--bad:#e5806f;--soft:#242f3a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Noto Sans KR','Noto Sans JP',system-ui,sans-serif;padding-bottom:76px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line)}
+header{flex-wrap:wrap}header h1{font-size:18px;margin:0;flex:1}header button.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}header button.off{opacity:.45}
+header input{width:auto}
+main{max-width:640px;margin:0 auto;padding:12px 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+h2{font-size:15px;margin:0 0 10px}h2 small{font-weight:400;color:var(--mute);margin-left:6px}
+label{display:block;font-size:12px;color:var(--mute)}
+input,select{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin-top:3px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--ai);outline-offset:1px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.w2{grid-column:span 2}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px}
+button.pri{background:var(--ai);color:var(--aif);border-color:var(--ai);font-weight:700;width:100%;padding:11px}
+header button{background:var(--ai);color:var(--aif);border-color:var(--ai);font-weight:700;white-space:nowrap}
+button.x{border:0;background:none;color:var(--mute);padding:4px 8px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:6px 5px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--mute);font-weight:500}
+.sc{overflow-x:auto}
+.up{color:var(--bad)}.dn{color:var(--ok)}
+.hero .lab{color:var(--mute);font-size:13px}.big{font-size:34px;font-weight:700;letter-spacing:-.5px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.row3 div{background:var(--soft);border-radius:8px;padding:8px;font-weight:500;font-size:14px}.row3 span{display:block;font-size:11px;color:var(--mute);font-weight:400}
+.br{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;margin:6px 0;font-size:13px}.br i{display:block;height:12px;background:var(--ai);border-radius:3px;min-width:2px}
+.it{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.it .m{flex:1;min-width:0}.it .m b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.it .m span{font-size:12px;color:var(--mute)}
+.tag{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--mute)}
+.bd{margin-bottom:14px}.bh{display:flex;justify-content:space-between;align-items:center;gap:10px}.bh input{width:110px;text-align:right}
+.bar{height:8px;background:var(--soft);border-radius:4px;margin:6px 0}.bar i{display:block;height:100%;background:var(--ok);border-radius:4px}.bar i.warn{background:#c98a1b}.bar i.over{background:var(--bad)}
+.bs{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
+.fr{display:grid;grid-template-columns:1fr 96px auto auto;gap:6px;align-items:center;margin-bottom:6px}.fr input{margin:0}.fr input[type=checkbox]{width:20px;height:20px}
+.empty{color:var(--mute);padding:8px 0}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;border:0;border-radius:0;background:none;padding:14px 0;color:var(--mute);font-size:13px}nav button.on{color:var(--ai);font-weight:700;box-shadow:inset 0 3px 0 var(--ai)}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:8px;font-size:13px;z-index:9}
+
+/* layout fixes: keep inputs inside their cards on iPhone */
+input,select{font-size:16px;min-height:42px}
+input[type=date],input[type=month]{-webkit-appearance:none;appearance:none;display:block;text-align:left;min-width:0;max-width:100%}
+input::-webkit-date-and-time-value{text-align:left;min-height:1.3em}
+select{-webkit-appearance:none;appearance:none;padding-right:30px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%238a96a3' stroke-width='2'/></svg>");background-repeat:no-repeat;background-position:right 11px center}
+.grid>*,.fr>*{min-width:0}
+input[type=checkbox]{min-height:0;padding:0}
+header{flex-wrap:nowrap;gap:6px;padding:8px 12px}
+header h1{display:none;flex:none}
+@media(min-width:520px){header h1{display:block}}
+header input{width:auto;flex:1 1 0;min-width:0;margin:0;min-height:38px;font-size:15px}
+header button{font-size:13px;padding:8px 10px;flex:none}
+@media(max-width:360px){header button{padding:8px 7px;font-size:12px}}
+</style></head><body>
+<header><h1>가계부</h1><input type="month" id="vm" aria-label="조회 월"><button id="ub" class="ghost" onclick="undo()">↩ 되돌리기</button><button onclick="exportX()">엑셀 내보내기</button></header>
+<main id="app"></main>
+<nav id="nav"></nav>
+<script>
+const KEY='kakeibo-app-v1',pad=n=>String(n).padStart(2,'0');
+const ld=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=ld(new Date()),mk=d=>d.slice(0,7);
+const addM=(ym,n)=>{const[y,m]=ym.split('-').map(Number),d=new Date(y,m-1+n,1);return d.getFullYear()+'-'+pad(d.getMonth()+1)};
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const yen=n=>'¥'+Math.round(n).toLocaleString('ja-JP'),pct=n=>(n>0?'+':'')+(n*100).toFixed(1)+'%';
+const sg=n=>(n>0?'+':n<0?'−':'')+yen(Math.abs(n)),d2=n=>n>0?'up':n<0?'dn':'';
+const seed=()=>({entries:[{id:1,date:'2026-09-27',cat:'買い物',shop:'フェルナ',amt:4925,note:''}],utils:[],
+fixed:[['住宅ローン',0,1],['光回線',0,1],['通信費(俺)',0,1],['通信費(ゆうき)',0,1],['NISA(俺)',85000,1],['SONY投資(ゆうき)',20000,1],['がん保険(俺)',0,1],['医療保険？(俺)',0,1],['がん保険(ゆうき)',0,1],['保険',0,1],['Apple Music',1980,0],['iCloud',540,1],['Netflix',890,1],['Apple Care',1730,1],['宝くじ',2800,1]].map(([n,a,u])=>({n,a,u})),
+reg:['買い物','外食','デート費','ガソリン代','医療費'],irr:['車整備','税金','飛行機代','家電','御祝儀'],
+budget:{'買い物':30000,'外食':10000,'デート費':5000,'ガソリン代':8500,'医療費':5000},vm:mk(today)});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S)S=seed();
+let H=[];try{H=JSON.parse(localStorage.getItem(KEY+'-h'))||[]}catch(e){}
+let tab='in';
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));localStorage.setItem(KEY+'-h',JSON.stringify(H))}catch(e){}};
+function snap(){H.push(JSON.stringify(S));if(H.length>30)H.shift()}
+function updUndo(){const b=$('#ub');if(b){b.classList.toggle('off',!H.length);b.setAttribute('aria-disabled',String(!H.length));b.title=H.length?'직전 작업을 취소 ('+H.length+'단계)':'되돌릴 작업이 없어요'}}
+function undo(){if(!H.length)return flash('되돌릴 작업이 없어요');S=JSON.parse(H.pop());save();render();flash('직전 작업을 되돌렸어요')}
+function flash(m){let t=$('#toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2200)}
+/* calc */
+const fixedBase=()=>S.fixed.filter(f=>f.u).reduce((s,f)=>s+(+f.a||0),0);
+const uM=ym=>S.utils.filter(u=>u.ym===ym).reduce((s,u)=>s+u.e+u.g+u.w,0);
+const entM=(ym,f=()=>true)=>S.entries.filter(e=>mk(e.date)===ym&&f(e)).reduce((s,e)=>s+e.amt,0);
+const tot=ym=>{const fx=fixedBase()+uM(ym),rg=entM(ym,e=>S.reg.includes(e.cat)),ir=entM(ym,e=>!S.reg.includes(e.cat));return{fx,rg,ir,all:fx+rg+ir}};
+/* views */
+function vIn(){
+ const o=c=>`<option>${esc(c)}</option>`,list=S.entries.filter(e=>mk(e.date)===S.vm).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
+ return `<section class="card"><h2>지출 입력<small>날짜는 직전 입력이 유지돼요</small></h2><div class="grid">
+ <label>날짜<input id="fd" type="date" value="${S.ld||today}"></label>
+ <label>큰항목<select id="fc">${S.reg.map(o).join('')}<optgroup label="비정기">${S.irr.map(o).join('')}</optgroup></select></label>
+ <label class="w2">가게/내용<input id="fs"></label><label>금액(엔)<input id="fa" type="number" inputmode="numeric"></label><label>비고<input id="fn"></label></div>
+ <button class="pri" onclick="addE()">추가</button></section>
+ <section class="card"><h2>${S.vm} 지출 내역<small>${list.length}건 · ${yen(sum)}</small></h2>${list.length?list.map(e=>`<div class="it"><div class="m"><b>${esc(e.shop||e.cat)}</b><span>${e.date.slice(5)} · ${esc(e.cat)} <span class="tag">${S.reg.includes(e.cat)?'정기':'비정기'}</span>${e.note?' · '+esc(e.note):''}</span></div><b>${yen(e.amt)}</b><button class="x" aria-label="삭제" onclick="delE(${e.id})">✕</button></div>`).join(''):'<div class="empty">이 달의 지출이 아직 없어요. 위에서 첫 지출을 추가하세요.</div>'}</section>`}
+function addE(){const date=$('#fd').value,amt=+$('#fa').value;
+ if(!date)return flash('날짜를 입력하세요');if(!(amt>0))return flash('금액을 입력하세요');
+ snap();S.entries.push({id:Date.now(),date,cat:$('#fc').value,shop:$('#fs').value.trim(),amt,note:$('#fn').value.trim()});S.ld=date;S.vm=mk(date);save();render();flash('추가했어요')}
+function delE(id){snap();S.entries=S.entries.filter(e=>e.id!==id);save();render()}
+function vDb(){
+ const m=S.vm,t=tot(m),p=tot(addM(m,-1)),d=t.all-p.all,y=+m.slice(0,4);
+ const cr=S.reg.map(c=>{const a=entM(m,e=>e.cat===c),b=entM(addM(m,-1),e=>e.cat===c);return`<tr><td>${esc(c)}</td><td>${yen(a)}</td><td>${yen(b)}</td><td class="${d2(a-b)}">${sg(a-b)}</td><td>${b?pct((a-b)/b):'–'}</td></tr>`}).join('');
+ const ms=[-5,-4,-3,-2,-1,0].map(k=>{const x=addM(m,k),q=tot(x);return{x,v:q.fx+q.rg}}),mx=Math.max(1,...ms.map(o=>o.v));
+ const bars=ms.map(o=>`<div class="br"><span>${o.x.slice(2)}</span><i style="width:${o.v/mx*100}%"></i><b>${yen(o.v)}</b></div>`).join('');
+ const ut=Array.from({length:12},(_,i)=>{const x=y+'-'+pad(i+1),a=uM(x),b=uM(addM(x,-12)),r=S.utils.find(u=>u.ym===x),f=(v,ok)=>ok?yen(v):'–';return`<tr><td>${i+1}월</td><td>${f(r&&r.e,r)}</td><td>${f(r&&r.g,r)}</td><td>${f(r&&r.w,r)}</td><td>${f(a,a)}</td><td>${f(b,b)}</td><td class="${a&&b?d2(a-b):''}">${a&&b?sg(a-b):'–'}</td></tr>`}).join('');
+ return `<section class="card hero"><div class="lab">${y}년 ${+m.slice(5)}월 총지출</div><div class="big">${yen(t.all)}</div><div class="${d2(d)}">전월 대비 ${sg(d)} (${p.all?pct(d/p.all):'–'})</div>
+ <div class="row3"><div><span>고정비</span>${yen(t.fx)}</div><div><span>정기 변동비</span>${yen(t.rg)}</div><div><span>비정기</span>${yen(t.ir)}</div></div></section>
+ <section class="card"><h2>카테고리별 비교<small>정기 변동비</small></h2><div class="sc"><table><tr><th>항목</th><th>이번달</th><th>지난달</th><th>차이</th><th>증감률</th></tr>${cr}</table></div></section>
+ <section class="card"><h2>최근 6개월<small>일상지출 = 고정비+정기 변동비</small></h2>${bars}</section>
+ <section class="card"><h2>${y}년 광열비 추이<small>전년동월 비교</small></h2><div class="sc"><table><tr><th>월</th><th>전기</th><th>가스</th><th>수도</th><th>합계</th><th>작년</th><th>증감</th></tr>${ut}</table></div></section>`}
+function vUt(){
+ const l=[...S.utils].sort((a,b)=>b.ym.localeCompare(a.ym));
+ return `<section class="card"><h2>광열비 입력<small>매달 한 줄</small></h2><div class="grid"><label class="w2">년월<input id="uy" type="month" value="${S.vm}"></label>
+ <label>전기<input id="ue" type="number" inputmode="numeric"></label><label>가스<input id="ug" type="number" inputmode="numeric"></label><label>수도<input id="uw" type="number" inputmode="numeric"></label></div>
+ <button class="pri" onclick="addU()">저장 (같은 달은 덮어쓰기)</button></section>
+ <section class="card"><h2>기록</h2>${l.length?`<div class="sc"><table><tr><th>년월</th><th>전기</th><th>가스</th><th>수도</th><th>합계</th><th></th></tr>${l.map(u=>`<tr><td>${u.ym}</td><td>${yen(u.e)}</td><td>${yen(u.g)}</td><td>${yen(u.w)}</td><td>${yen(u.e+u.g+u.w)}</td><td><button class="x" aria-label="삭제" onclick="delU('${u.ym}')">✕</button></td></tr>`).join('')}</table></div>`:'<div class="empty">아직 기록이 없어요. 이번 달 전기·가스·수도 금액을 입력하세요.</div>'}</section>`}
+function addU(){const ym=$('#uy').value;if(!ym)return flash('년월을 선택하세요');
+ const r={ym,e:+$('#ue').value||0,g:+$('#ug').value||0,w:+$('#uw').value||0};snap();S.utils=S.utils.filter(u=>u.ym!==ym);S.utils.push(r);save();render();flash('저장했어요')}
+function delU(ym){snap();S.utils=S.utils.filter(u=>u.ym!==ym);save();render()}
+const warnT=(c,a,b)=>!b?'':a>=b?`${c} 예산을 ${Math.round(a-b).toLocaleString()}엔 초과했습니다!`:a/b>=.8?`${c} 예산 ${Math.round(a/b*100)}% 소진`:'';
+function vBd(){
+ let tb=0,ta=0;const ws=[];
+ const rows=S.reg.map((c,i)=>{const b=+S.budget[c]||0,a=entM(S.vm,e=>e.cat===c),r=b?a/b:0,w=warnT(c,a,b);tb+=b;ta+=a;if(w)ws.push(`<div class="${r>=1?'up':''}">${esc(w)}</div>`);
+  return`<div class="bd"><div class="bh"><b>${esc(c)}</b><label>예산<input type="number" inputmode="numeric" value="${b}" onchange="setB(${i},this.value)"></label></div><div class="bar"><i class="${r>=1?'over':r>=.8?'warn':''}" style="width:${Math.min(r,1)*100}%"></i></div><div class="bs"><span>실제 ${yen(a)}</span><span>잔액 ${sg(b-a)}</span><span>${Math.round(r*100)}%</span></div></div>`}).join('');
+ return `<section class="card"><h2>${S.vm} 예산<small>합계 ${yen(ta)} / ${yen(tb)}</small></h2>${rows}</section>
+ <section class="card"><h2>종합 경고</h2>${ws.length?ws.join(''):'<div class="empty">지금은 경고가 없어요.</div>'}</section>`}
+function setB(i,v){snap();S.budget[S.reg[i]]=+v||0;save();render()}
+function vSt(){
+ const fr=S.fixed.map((f,i)=>`<div class="fr"><input value="${esc(f.n)}" aria-label="항목" onchange="setF(${i},'n',this.value)"><input type="number" inputmode="numeric" value="${f.a}" aria-label="금액" onchange="setF(${i},'a',+this.value||0)"><input type="checkbox" ${f.u?'checked':''} aria-label="사용" onchange="setF(${i},'u',this.checked)"><button class="x" aria-label="삭제" onclick="delF(${i})">✕</button></div>`).join('');
+ return `<section class="card"><h2>고정비 기본설정<small>체크한 항목만 매월 자동 반영 · 합계 ${yen(fixedBase())}</small></h2>${fr}<button onclick="addF()">+ 항목 추가</button></section>
+ <section class="card"><h2>카테고리<small>쉼표로 구분</small></h2><label>정기 변동비 (예산 대상)<input value="${esc(S.reg.join(', '))}" onchange="setC('reg',this.value)"></label><br><label>비정기 지출<input value="${esc(S.irr.join(', '))}" onchange="setC('irr',this.value)"></label></section>`}
+function setF(i,k,v){snap();S.fixed[i][k]=v;save();if(k!=='n')render()}
+function addF(){snap();S.fixed.push({n:'새 항목',a:0,u:1});save();render()}
+function delF(i){snap();S.fixed.splice(i,1);save();render()}
+function setC(k,v){snap();S[k]=v.split(/[,、]/).map(s=>s.trim()).filter(Boolean);save();render()}
+/* shell */
+const TABS=[['in','입력',vIn],['db','대시보드',vDb],['ut','광열비',vUt],['bd','예산',vBd],['st','설정',vSt]];
+function render(){updUndo();const v=TABS.find(t=>t[0]===tab);$('#app').innerHTML=v[2]();$('#vm').value=S.vm;
+ $('#nav').innerHTML=TABS.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="tab='${t[0]}';render();scrollTo(0,0)">${t[1]}</button>`).join('')}
+$('#vm').onchange=function(){if(this.value){S.vm=this.value;save();render()}};
+render();
+/* Excel export: same sheet names / headers / cell layout as the original workbook */
+function build(){
+ const wb=XLSX.utils.book_new(),D=s=>new Date(s+'T00:00:00'),rn=S.reg.length,vm=S.vm,y=+vm.slice(0,4);
+ const ser=s=>Math.round((D(s)-new Date(1899,11,30))/864e5),fx=(f,v)=>({t:typeof v==='string'?'s':'n',f,v}),grid=n=>Array.from({length:n},()=>[]);
+ const sheet=(name,rows,w,dates)=>{const ws=XLSX.utils.aoa_to_sheet(rows,{cellDates:true});ws['!cols']=w.map(x=>({wch:x}));(dates||[]).forEach(a=>{if(ws[a])ws[a].z='yyyy-mm-dd'});XLSX.utils.book_append_sheet(wb,ws,name)};
+ const FX=x=>`고정비설정!$B$25+SUMIFS(광열비!$E$2:$E$300,광열비!$A$2:$A$300,${x})`;
+ const EN=(c,lo,hi)=>`SUMIFS(지출입력!$D$2:$D$999,${c}지출입력!$G$2:$G$999,">="&${lo},지출입력!$G$2:$G$999,"<"&${hi})`;
+ /* 지출입력 */
+ const es=[...S.entries].sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id),R1=[['날짜','큰항목','가게/내용','금액','비고','구분(자동)','실제날짜(자동)']];
+ es.forEach((e,i)=>{const r=i+2;R1.push([D(e.date),e.cat,e.shop,e.amt,e.note||'',fx(`IF(B${r}="","",IF(COUNTIF(설정!$A$2:$A$${rn+1},B${r})>0,"정기","비정기"))`,S.reg.includes(e.cat)?'정기':'비정기'),fx(r===2?'A2':`IF(A${r}="",G${r-1},A${r})`,ser(e.date))])});
+ sheet('지출입력',R1,[14,13,22,14,20,11,16],es.flatMap((_,i)=>['A'+(i+2),'G'+(i+2)]));
+ /* 광열비 */
+ const us=[...S.utils].sort((a,b)=>a.ym.localeCompare(b.ym)),R2=[['년월','전기','가스','수도','합계(자동)','','매달 한 줄만 입력하세요: 날짜(그 달 1일) + 전기/가스/수도 금액 3개.']];
+ us.forEach((u,i)=>{const r=i+2;R2.push([D(u.ym+'-01'),u.e,u.g,u.w,fx(`IF(A${r}="","",SUM(B${r}:D${r}))`,u.e+u.g+u.w)])});
+ sheet('광열비',R2,[13,11,11,11,12,4,40],us.map((_,i)=>'A'+(i+2)));
+ /* 고정비설정 */
+ const F=grid(30);F[0]=['고정비 기본설정'];F[2]=['항목','기본금액','비고','사용여부'];
+ S.fixed.slice(0,21).forEach((f,i)=>{F[3+i]=[f.n,f.a,'',f.u?'사용':'미사용']});
+ F[24]=['기본 고정비 합계 (사용 항목만)',fx('SUMIF(D4:D24,"사용",B4:B24)',fixedBase())];F[27]=['월별 예외 금액'];F[29]=['년월','항목','실제금액','비고','기본금액(자동)','차이(자동)'];
+ sheet('고정비설정',F,[30,14,14,10,15,15]);
+ /* 월간대시보드 */
+ const H=grid(31+rn),put=(r,a)=>{H[r-1]=a},tt=tot(vm),pp=tot(addM(vm,-1)),ALL='$B$3';
+ put(1,['월간 가계부 대시보드']);put(3,['조회 월',D(vm+'-01')]);
+ put(5,['이번 달 총지출 (전체)',fx('B6+B7+B8',tt.all)]);put(6,['고정비',fx(FX(ALL),tt.fx)]);
+ put(7,['변동비 (정기)',fx(EN('지출입력!$F$2:$F$999,"정기",',ALL,'EDATE($B$3,1)'),tt.rg)]);
+ put(8,['변동비 (비정기)',fx(EN('지출입력!$F$2:$F$999,"비정기",',ALL,'EDATE($B$3,1)'),tt.ir),'← 참고용, 위 총지출에 포함됨']);
+ put(9,['일상지출 합계 (고정비+정기)',fx('B6+B7',tt.fx+tt.rg)]);
+ put(10,['지난달 총지출 (전체)',fx(FX('EDATE($B$3,-1)')+'+'+EN('','EDATE($B$3,-1)',ALL),pp.all)]);
+ put(11,['전월대비 증감액',fx('B5-B10',tt.all-pp.all)]);put(12,['전월대비 증감률',fx('IFERROR(B11/B10,0)',pp.all?(tt.all-pp.all)/pp.all:0)]);
+ put(14,['광열비 올해 추이 (전년동월 비교 포함)']);put(15,['월','전기','가스','수도','합계','작년동월','증감']);
+ const da=['B3'];
+ for(let m=1;m<=12;m++){const r=15+m,x=y+'-'+pad(m),u=S.utils.find(o=>o.ym===x),s=uM(x),l=uM(addM(x,-12)),su=c=>`SUMIFS(광열비!$${c}$2:$${c}$300,광열비!$A$2:$A$300,A${r})`;da.push('A'+r);
+  put(r,[fx(`DATE(YEAR($B$3),${m},1)`,ser(x+'-01')),fx(su('B'),u?u.e:0),fx(su('C'),u?u.g:0),fx(su('D'),u?u.w:0),fx(`SUM(B${r}:D${r})`,s),fx(`SUMIFS(광열비!$E$2:$E$300,광열비!$A$2:$A$300,EDATE(A${r},-12))`,l),fx(`E${r}-F${r}`,s-l)])}
+ put(29,['카테고리별 비교 (정기 변동비)']);put(30,['항목','이번달','지난달','차이','증감률']);
+ S.reg.forEach((c,i)=>{const r=31+i,a=entM(vm,e=>e.cat===c),b=entM(addM(vm,-1),e=>e.cat===c),k=`지출입력!$B$2:$B$999,$A${r},`;
+  put(r,[fx(`설정!A${i+2}`,c),fx(EN(k,ALL,'EDATE($B$3,1)'),a),fx(EN(k,'EDATE($B$3,-1)',ALL),b),fx(`B${r}-C${r}`,a-b),fx(`IFERROR(D${r}/C${r},"")`,b?(a-b)/b:'')])});
+ sheet('월간대시보드',H,[22,16,16,14,14,16,14],da);
+ /* 예산 */
+ const B=grid(6+rn);B[0]=['월별 예산'];B[1]=["예산 대비 실제 지출은 '월간대시보드'에서 선택한 조회 월을 기준으로 계산됩니다."];B[3]=['카테고리','예산금액','실제지출','잔액','사용률','최근6개월 월평균','추천예산','경고 문구'];
+ let sb=0,sa=0;const BM='월간대시보드!$B$3';
+ S.reg.forEach((c,i)=>{const r=5+i,b=+S.budget[c]||0,a=entM(vm,e=>e.cat===c),av=[-5,-4,-3,-2,-1,0].reduce((s,k)=>s+entM(addM(vm,k),e=>e.cat===c),0)/6,u=b?a/b:0,k=`지출입력!$B$2:$B$999,$A${r},`;sb+=b;sa+=a;
+  B[r-1]=[fx(`설정!A${i+2}`,c),b,fx(EN(k,BM,`EDATE(${BM},1)`),a),fx(`B${r}-C${r}`,b-a),fx(`IFERROR(C${r}/B${r},0)`,u),fx(EN(k,`EDATE(${BM},-5)`,`EDATE(${BM},1)`)+'/6',av),fx(`ROUND(F${r}/1000,0)*1000`,Math.round(av/1000)*1000),
+  fx(`IF(B${r}=0,"",IF(E${r}>=1,$A${r}&" 예산을 "&TEXT(C${r}-B${r},"#,##0")&"엔 초과했습니다!",IF(E${r}>=0.8,$A${r}&" 예산 "&TEXT(E${r},"0%")&" 소진","")))`,warnT(c,a,b))]});
+ const tr=5+rn;B[tr-1]=['합계',fx(`SUM(B5:B${tr-1})`,sb),fx(`SUM(C5:C${tr-1})`,sa),fx(`SUM(D5:D${tr-1})`,sb-sa),fx(`IFERROR(C${tr}/B${tr},0)`,sb?sa/sb:0)];
+ sheet('예산',B,[14,13,13,13,10,17,12,34]);
+ /* 설정 */
+ const n=rn+S.irr.length,T=[['변동비 카테고리','비정기지출 카테고리','사용여부 옵션','통합 카테고리 (드롭다운용)']];
+ for(let i=0;i<Math.max(n,2);i++){const r=i+2;T.push([S.reg[i]||'',S.irr[i]||'',i===0?'사용':i===1?'미사용':'',i<rn?fx(`A${r}`,S.reg[i]):i<n?fx(`B${i-rn+2}`,S.irr[i-rn]):''])}
+ sheet('설정',T,[18,19,14,26]);
+ wb.Workbook={CalcPr:{fullCalcOnLoad:true}};return wb}
+async function exportX(){
+ flash('엑셀 파일을 만드는 중…');
+ try{if(typeof XLSX==='undefined')return flash('엑셀 라이브러리를 불러오지 못했어요. 네트워크를 확인하고 다시 눌러 주세요');
+  const wb=build(),name=`가계부_${today}.xlsx`,inV=!!window.claude,dl=inV?await claude.use('downloads'):null;
+  if(!dl&&inV)return flash('이 화면에서는 파일 저장이 막혀 있어요. 링크를 Safari/Chrome에서 열어 다시 눌러 주세요');
+  if(dl){const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true});await dl.save({filename:name,data:new Blob([buf])});flash('엑셀 파일을 저장했어요')}
+  else{XLSX.writeFile(wb,name,{cellDates:true});flash('엑셀 파일을 내보냈어요')}
+ }catch(e){if(e&&e.code==='declined')return;flash('내보내기에 실패했어요: '+((e&&e.message)||e))}}
+</script></body></html>
