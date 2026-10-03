@@ -86,7 +86,10 @@ label.fbtn{display:block;text-align:center;padding:12px;border:1px solid var(--l
 .chip{display:inline-flex;align-items:center;gap:8px;background:var(--soft);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer}
 .chip.sel{background:color-mix(in srgb,var(--bad) 12%,var(--card));box-shadow:inset 0 0 0 1px var(--bad)}.chip b{color:var(--bad);font-size:12px}
 .addc{display:flex;gap:8px}.addc input{flex:1;margin:0}.addc button{flex:none}
-nav button{font-size:12px}input[type=search]{-webkit-appearance:none;appearance:none}</style></head><body>
+nav button{font-size:12px}input[type=search]{-webkit-appearance:none;appearance:none}
+.dh{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 4px;font-size:13px;font-weight:600;color:var(--mute)}.dh b{color:var(--ink);font-weight:700}
+.dh:first-of-type{padding-top:2px}
+</style></head><body>
 <header><h1>가계부</h1><input type="month" id="vm" aria-label="조회 월"><button id="ub" class="ghost" onclick="undo()">↩ 되돌리기</button></header>
 <main id="app"></main>
 <nav id="nav"></nav>
@@ -121,12 +124,12 @@ const tot=ym=>{const fx=fixedBase(ym)+uM(ym),rg=entM(ym,e=>S.reg.includes(e.cat)
 /* views */
 function vIn(){
  const ed=S.entries.find(e=>e.id===EID),q=Q.trim().toLowerCase(),o=c=>`<option${ed&&ed.cat===c?' selected':''}>${esc(c)}</option>`,list=S.entries.filter(e=>q?[e.shop,e.cat,e.note,e.amt,e.date].join(' ').toLowerCase().includes(q):mk(e.date)===S.vm).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
- return `<section class="card"><h2>${ed?'지출 수정':'지출 입력'}<small>${ed?'고친 뒤 수정 저장을 누르세요':'날짜는 직전 입력이 유지돼요'}</small></h2><div class="grid">
- <label>날짜<input id="fd" type="date" value="${ed?ed.date:S.ld||today}"></label>
+ return `<section class="card"><h2>${ed?'지출 수정':'지출 입력'}<small>${ed?'고친 뒤 수정 저장을 누르세요':'날짜는 오늘로 시작해요'}</small></h2><div class="grid">
+ <label>날짜<input id="fd" type="date" value="${ed?ed.date:ld(new Date())}"></label>
  <label>큰항목<select id="fc">${ed&&![...S.reg,...S.irr].includes(ed.cat)?o(ed.cat):''}${S.reg.map(o).join('')}<optgroup label="비정기">${S.irr.map(o).join('')}</optgroup></select></label>
  <label class="w2">가게/내용<input id="fs" list="shops" value="${esc(ed?ed.shop:'')}" onchange="fillS(this.value)"><datalist id="shops">${[...new Set(S.entries.map(e=>e.shop).filter(Boolean))].slice(-100).map(x=>`<option value="${esc(x)}">`).join('')}</datalist></label><label>금액(엔)<input id="fa" type="number" inputmode="numeric" value="${ed?ed.amt:''}"></label><label>비고<input id="fn" value="${esc(ed?ed.note:'')}"></label></div>
  <button class="pri" onclick="addE()">${ed?'수정 저장':'추가'}</button>${ed?'<button style="width:100%;margin-top:8px" onclick="EID=null;render()">취소</button>':''}</section>
- <section class="card"><h2>${q?'검색 결과':S.vm+' 지출 내역'}<small>${list.length}건 · ${yen(sum)}</small></h2><input id="q" type="search" enterkeyhint="search" placeholder="🔍 가게·금액·메모 검색 (전체 기간)" value="${esc(Q)}" onchange="setQ(this.value)" style="margin:0 0 8px">${list.length?'<div class="hint" style="margin:-4px 0 4px">← 왼쪽으로 밀면 삭제 버튼이 나와요</div>':''}${list.length?list.map(e=>`<div class="swr"><button class="swd" onclick="delE(${e.id})">삭제</button><div class="swc it"><div class="m" onclick="editE(${e.id})"><b>${esc(e.shop||e.cat)}</b><span>${q?e.date:e.date.slice(5)} · ${esc(e.cat)} <span class="tag">${S.reg.includes(e.cat)?'정기':'비정기'}</span>${e.note?' · '+esc(e.note):''}</span></div><b>${yen(e.amt)}</b></div></div>`).join(''):'<div class="empty">이 달의 지출이 아직 없어요. 위에서 첫 지출을 추가하세요.</div>'}</section>`}
+ <section class="card"><h2>${q?'검색 결과':S.vm+' 지출 내역'}<small>${list.length}건 · ${yen(sum)}</small></h2><input id="q" type="search" enterkeyhint="search" placeholder="🔍 가게·금액·메모 검색 (전체 기간)" value="${esc(Q)}" onchange="setQ(this.value)" style="margin:0 0 8px">${list.length?'<div class="hint" style="margin:-4px 0 4px">← 왼쪽으로 밀면 삭제 버튼이 나와요</div>':''}${list.length?grp(list,e=>`<div class="swr"><button class="swd" onclick="delE(${e.id})">삭제</button><div class="swc it"><div class="m" onclick="editE(${e.id})"><b>${esc(e.shop||e.cat)}</b><span>${esc(e.cat)} <span class="tag">${S.reg.includes(e.cat)?'정기':'비정기'}</span>${e.note?' · '+esc(e.note):''}</span></div><b>${yen(e.amt)}</b></div></div>`):'<div class="empty">이 달의 지출이 아직 없어요. 위에서 첫 지출을 추가하세요.</div>'}</section>`}
 function addE(){const date=$('#fd').value,amt=+$('#fa').value;
  if(!date)return flash('날짜를 입력하세요');if(!(amt>0))return flash('금액을 입력하세요');
  snap();const o={date,cat:$('#fc').value,shop:$('#fs').value.trim(),amt,note:$('#fn').value.trim()},up=EID;if(EID){Object.assign(S.entries.find(e=>e.id===EID)||{},o);EID=null}else S.entries.push({id:Date.now(),...o});S.ld=date;S.vm=mk(date);Q='';save();render();
@@ -224,7 +227,7 @@ let lastDrag=0,tapClosed=0,EID=null,Q='';
 function editE(id){if(Date.now()-lastDrag<400||Date.now()-tapClosed<400)return;EID=id;tab='in';render();scrollTo(0,0)}
 function setQ(v){Q=v;render();const q=$('#q');if(q&&v){q.focus();q.setSelectionRange(v.length,v.length)}}
 function fillS(v){if(EID||!v)return;const l=[...S.entries].reverse().find(e=>e.shop===v);if(!l)return;
- if([...$('#fc').options].some(o=>o.value===l.cat))$('#fc').value=l.cat;if(!$('#fa').value)$('#fa').value=l.amt}
+ if([...$('#fc').options].some(o=>o.value===l.cat))$('#fc').value=l.cat;}
 const irCard=y=>{const r=S.irr.map(c=>[c,S.entries.filter(e=>e.cat===c&&e.date.startsWith(y+'-')).reduce((s,e)=>s+e.amt,0)]).filter(x=>x[1]),t=r.reduce((s,x)=>s+x[1],0);
  return `<section class="card"><h2>${y}년 비정기 지출 누계<small>${yen(t)}</small></h2>${r.length?r.map(([c,v])=>`<div class="br" style="grid-template-columns:90px 1fr auto"><span>${esc(c)}</span><i style="width:${v/t*100}%"></i><b>${yen(v)}</b></div>`).join(''):'<div class="empty">올해 비정기 지출이 아직 없어요.</div>'}</section>`};
 const yrSum=(y,c)=>S.entries.filter(e=>e.cat===c&&e.date.startsWith(y+'-')).reduce((s,e)=>s+e.amt,0);
@@ -236,6 +239,8 @@ function vYr(){const y=+S.vm.slice(0,4),cm=mk(today),fm=[...S.entries.map(e=>mk(
  return `<section class="card"><h2>${y}년 월별 총지출<small>고정비·광열비 포함</small></h2>${ms.filter(o=>o.a!==null).map(o=>`<div class="br"><span>${o.m}월</span><i style="width:${o.a/mx*100}%"></i><b>${yen(o.a)}</b></div>`).join('')||'<div class="empty">아직 데이터가 없어요.</div>'}</section>
  <section class="card"><h2>작년 같은 달과 비교</h2><div class="sc"><table><tr><th>월</th><th>${y}</th><th>${y-1}</th><th>차이</th></tr>${rows}<tr><td><b>합계</b></td><td><b>${yen(ta)}</b></td><td><b>${yen(tb)}</b></td><td class="${d2(ta-tb)}"><b>${sg(ta-tb)}</b></td></tr></table></div><div class="hint" style="margin:8px 0 0">합계는 두 해 모두 데이터가 있는 달만 더해요</div></section>
  <section class="card"><h2>항목별 연간 지출<small>고정비·광열비 제외</small></h2><div class="sc"><table><tr><th>항목</th><th>${y}</th><th>${y-1}</th><th>차이</th></tr>${cats||'<tr><td colspan=4 class="empty">기록이 없어요</td></tr>'}</table></div></section>`}
+const grp=(list,fn)=>{let cur='',o='';for(const e of list){if(e.date!==cur){cur=e.date;const t=list.filter(x=>x.date===cur).reduce((s,x)=>s+x.amt,0),d=new Date(cur+'T00:00:00');
+ o+=`<div class="dh"><span>${Q.trim()?cur.slice(0,4)+'년 ':''}${d.getMonth()+1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]})</span><b>${yen(t)}</b></div>`}o+=fn(e)}return o};
 /* shell */
 const TABS=[['in','입력',vIn],['db','대시보드',vDb],['ut','광열비',vUt],['bd','예산',vBd],['yr','연간',vYr],['st','설정',vSt]];
 function render(){updUndo();const v=TABS.find(t=>t[0]===tab);$('#app').innerHTML=v[2]();$('#vm').value=S.vm;
