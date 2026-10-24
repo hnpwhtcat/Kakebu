@@ -105,8 +105,17 @@ nav button{font-size:12px}input[type=search]{-webkit-appearance:none;appearance:
 .dh{background:color-mix(in srgb,var(--ai) 12%,var(--card));color:var(--ai);border-radius:10px;padding:9px 12px;margin:14px 0 2px;font-size:14px}
 .dh:first-of-type{padding:9px 12px;margin-top:4px}.dh b{color:var(--ink)}
 .dh.sat{color:var(--sat);background:color-mix(in srgb,var(--sat) 12%,var(--card))}.dh.sun{color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--card))}.dh.tdy{box-shadow:inset 3px 0 0 currentColor}
+.hrow{display:flex;align-items:center;gap:6px}header{flex-direction:column;align-items:stretch;gap:6px}#ub{margin-left:auto}.hsw{margin:0}.hsw button{font-size:14px;padding:7px 4px}
+.bdg{font-style:normal;background:var(--bad);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;margin-left:6px}
+.hk{border-bottom:1px solid var(--line);padding:9px 0}.hk:last-child{border-bottom:0}.hkr{display:flex;align-items:center;gap:12px;color:var(--ink);font-size:15px;margin:0}
+.hkr input[type=checkbox]{width:26px;height:26px;min-height:0;margin:0;padding:0;flex:none;accent-color:var(--ai)}.hkr .m{flex:1;min-width:0}.hkr .m b{display:block}.hkr .m span{font-size:12px;color:var(--mute)}
+.hkr em{font-style:normal;font-size:12px;font-weight:700;color:var(--mute);white-space:nowrap}.hkr em.late{color:var(--bad)}.hkr em.soon{color:#c98a1b}
+.hk.on{background:color-mix(in srgb,var(--ai) 8%,var(--card));margin:0 -8px;padding:9px 8px;border-radius:12px;border-bottom:0}.hn{margin:8px 0 0;min-height:38px;font-size:14px}
+.skl{display:block;text-align:right;font-size:12px;color:var(--mute);text-decoration:underline;margin-top:2px;cursor:pointer}
+.cbar{position:sticky;bottom:calc(66px + env(safe-area-inset-bottom,0px));padding:8px 0;z-index:4}
+.hmn{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.hmn button{width:42px;padding:6px 0;font-size:18px}.addc select{flex:1;min-width:0;margin:0}
 </style></head><body>
-<header><h1>가계부</h1><input type="month" id="vm" aria-label="조회 월"><button id="ub" class="ghost" onclick="undo()">↩ 되돌리기</button></header>
+<header><div class="hrow"><h1>가계부</h1><input type="month" id="vm" aria-label="조회 월"><button id="ub" class="ghost" onclick="undo()">↩ 되돌리기</button></div><div id="hsw" class="seg hsw"></div></header>
 <main id="app"></main>
 <nav id="nav"></nav>
 <script>
@@ -123,7 +132,7 @@ reg:['買い物','外食','デート費','ガソリン代','医療費'],irr:['�
 budget:{'買い物':30000,'外食':10000,'デート費':5000,'ガソリン代':8500,'医療費':5000},vm:mk(today)});
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S)S=seed();
-function mig(){S.fixed.forEach(f=>{if(!f.h){f.h=[['0000-01',+f.a||0]];delete f.a}});S.inc=S.inc||[];S.icat=S.icat||['급여','상여','임시수입']}mig();
+function mig(){S.fixed.forEach(f=>{if(!f.h){f.h=[['0000-01',+f.a||0]];delete f.a}});S.inc=S.inc||[];S.icat=S.icat||['급여','상여','임시수입'];S.tasks=S.tasks||[];S.tlog=S.tlog||[]}mig();
 let H=[];try{H=JSON.parse(localStorage.getItem(KEY+'-h'))||[]}catch(e){}
 let tab='in';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));localStorage.setItem(KEY+'-h',JSON.stringify(H))}catch(e){}};
@@ -164,12 +173,13 @@ function vDb(){
  ${irCard(y)}<section class="card"><h2>${y}년 광열비 추이<small>전년동월 비교</small></h2><div class="sc"><table><tr><th>월</th><th>전기</th><th>가스</th><th>수도</th><th>합계</th><th>작년</th><th>증감</th></tr>${ut}</table></div></section>`}
 function vUt(){
  const l=[...S.utils].sort((a,b)=>b.ym.localeCompare(a.ym));
- return `<section class="card"><h2>광열비 입력<small>매달 한 줄</small></h2><div class="grid"><label class="w2">년월<input id="uy" type="month" value="${S.vm}"></label>
- <label>전기<input id="ue" type="number" inputmode="numeric"></label><label>가스<input id="ug" type="number" inputmode="numeric"></label><label>수도<input id="uw" type="number" inputmode="numeric"></label></div>
- <button class="pri" onclick="addU()">저장 (같은 달은 덮어쓰기)</button></section>
+ return `<section class="card"><h2>광열비 입력<small>매달 한 줄</small></h2><div class="grid"><label class="w2">년월<input id="uy" type="month" value="${S.vm}" onchange="phU()"></label>
+ <label>전기<input id="ue" type="number" inputmode="numeric" placeholder="${phv(S.vm,'e')!==''?'현재 '+phv(S.vm,'e'):'0'}"></label><label>가스<input id="ug" type="number" inputmode="numeric" placeholder="${phv(S.vm,'g')!==''?'현재 '+phv(S.vm,'g'):'0'}"></label><label>수도<input id="uw" type="number" inputmode="numeric" placeholder="${phv(S.vm,'w')!==''?'현재 '+phv(S.vm,'w'):'0'}"></label></div>
+ <button class="pri" onclick="addU()">저장</button><div class="hint" style="margin:8px 0 0">같은 달에 다시 입력하면, 비워 둔 항목은 기존 값이 그대로 유지돼요. 0을 입력하면 0으로 바뀌어요.</div></section>
  <section class="card"><h2>기록<small>← 밀어서 삭제</small></h2>${l.length?l.map(u=>`<div class="swr"><button class="swd" onclick="delU('${u.ym}')">삭제</button><div class="swc it"><div class="m"><b>${u.ym}</b><span>전기 ${yen(u.e)} · 가스 ${yen(u.g)} · 수도 ${yen(u.w)}</span></div><b>${yen(u.e+u.g+u.w)}</b></div></div>`).join(''):'<div class="empty">아직 기록이 없어요. 이번 달 전기·가스·수도 금액을 입력하세요.</div>'}</section>`}
 function addU(){const ym=$('#uy').value;if(!ym)return flash('년월을 선택하세요');
- const r={ym,e:+$('#ue').value||0,g:+$('#ug').value||0,w:+$('#uw').value||0};snap();S.utils=S.utils.filter(u=>u.ym!==ym);S.utils.push(r);save();render();flash('저장했어요')}
+ if(!['#ue','#ug','#uw'].some(i=>$(i).value.trim()!==''))return flash('금액을 하나 이상 입력하세요');
+ const old=S.utils.find(u=>u.ym===ym)||{e:0,g:0,w:0},f=(i,k)=>{const v=$(i).value.trim();return v===''?old[k]:(+v||0)},r={ym,e:f('#ue','e'),g:f('#ug','g'),w:f('#uw','w')};snap();S.utils=S.utils.filter(u=>u.ym!==ym);S.utils.push(r);save();render();flash('저장했어요')}
 function delU(ym){snap();S.utils=S.utils.filter(u=>u.ym!==ym);save();render()}
 const warnT=(c,a,b)=>!b?'':a>=b?`${c} 예산을 ${Math.round(a-b).toLocaleString()}엔 초과했습니다!`:a/b>=.8?`${c} 예산 ${Math.round(a/b*100)}% 소진`:'';
 function vBd(){
@@ -282,7 +292,7 @@ function editI(id){if(Date.now()-lastDrag<400||Date.now()-tapClosed<400)return;I
 const salNote=()=>{const t=ld(new Date()),cm=mk(t),pm=addM(cm,-1),p=S.inc.filter(e=>e.cat===SAL()&&mk(e.date)===pm).sort((a,b)=>b.date.localeCompare(a.date))[0];
  if(!p||S.inc.some(e=>e.cat===SAL()&&mk(e.date)===cm)||+t.slice(8)<+p.date.slice(8))return'';
  return `<div class="note" onclick="MODE='inc';render()">💴 이번 달 급여를 아직 입력하지 않았어요 <b>입력하기</b></div>`};
-function vInW(){return salNote()+`<div class="seg"><button class="${MODE==='exp'?'on':''}" onclick="MODE='exp';render()">지출</button><button class="${MODE==='inc'?'on':''}" onclick="MODE='inc';render()">수입</button></div>`+(MODE==='inc'?vInc():vIn())}
+function vInW(){return hwNote()+salNote()+`<div class="seg"><button class="${MODE==='exp'?'on':''}" onclick="MODE='exp';render()">지출</button><button class="${MODE==='inc'?'on':''}" onclick="MODE='inc';render()">수입</button></div>`+(MODE==='inc'?vInc():vIn())}
 function vInc(){const ed=S.inc.find(e=>e.id===IID),o=c=>`<option${ed&&ed.cat===c?' selected':''}>${esc(c)}</option>`,list=S.inc.filter(e=>mk(e.date)===S.vm).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
  return `<section class="card"><h2>${ed?'수입 수정':'수입 입력'}<small>${ed?'고친 뒤 수정 저장을 누르세요':'날짜는 오늘로 시작해요'}</small></h2><div class="grid">
  <label>날짜<input id="fd" type="date" value="${ed?ed.date:ld(new Date())}"></label><label>종류<select id="fc">${ed&&!S.icat.includes(ed.cat)?o(ed.cat):''}${S.icat.map(o).join('')}</select></label>
@@ -327,10 +337,63 @@ function vSt(){const ef=S.eff||S.vm,N=S.fixed.length;
   :`<div class="fi${f.u?'':' off'}"><div class="swr nb"><button class="swd" onclick="delF(${i})">삭제</button><div class="swc"><div class="fr"><input value="${esc(f.n)}" aria-label="항목" onchange="setF(${i},'n',this.value)"><input type="number" inputmode="numeric" value="${amtAt(f,ef)}" aria-label="금액" onchange="setA(${i},+this.value||0)"></div></div></div>${f.u?'':`<div class="hs">합계에서 제외 중 · <a onclick="setF(${i},'u',1)">다시 포함</a></div>`}${f.h.length>1?`<div class="hs">${f.h.map(([m,a])=>(m<'0001'?'처음':m.replace('-','.'))+'~ '+yen(a)).join(' → ')}</div>`:''}</div>`).join('');
  return `<section class="card"><h2>고정비 기본설정<small>매월 반영되는 항목</small></h2><label>금액을 바꾸면 이 달부터 적용돼요<input id="ef" type="month" value="${ef}" onchange="S.eff=this.value||S.vm;save();render()"></label><div class="hint">${ef} 기준 합계 ${yen(fixedBase(ef))} · ${FO?'▲▼ 버튼으로 순서를 바꾸세요':'이전 달 금액은 그대로 · 항목을 왼쪽으로 밀면 삭제'}</div><div class="fbar"><button onclick="FO=!FO;render()">${FO?'순서 변경 완료':'↕ 순서 변경'}</button></div>${fr}${FO?'':'<button onclick="addF()">+ 항목 추가</button>'}</section>
  ${catCard()}${catIn()}${bk()}`}
+/* v5: housework section */
+let nid=Date.now(),HD=ld(new Date()),HCK={},HE=null,HO=false,HM=mk(ld(new Date())),HS=ld(new Date()),HF=0;const ST={};
+const PRE=['욕실 청소','화장실 청소','세면대 청소','세탁기 필터 청소','주방 배수구 청소','환풍기 청소','에어컨 필터 청소','냉장고 정리'];
+const dI=s=>Math.round((new Date(s+'T00:00:00')-new Date(ld(new Date())+'T00:00:00'))/864e5);
+const addD=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return ld(d)};
+const addMo=(s,n)=>{const d=new Date(s+'T00:00:00');d.setMonth(d.getMonth()+n);return ld(d)};
+const cyTxt=t=>t.cu==='m'?(t.cn===1?'매월':t.cn+'개월마다'):t.cu==='w'?(t.cn===1?'매주':t.cn+'주마다'):(t.cn===1?'매일':t.cn+'일마다');
+function tst(t){const l=S.tlog.filter(r=>r.t===t.id).map(r=>r.d).sort().pop()||'',b=[l,t.sk||''].sort().pop(),ago=l?-dI(l):null;let due=null,left=null;
+ if(b&&t.cn){due=t.cu==='m'?addMo(b,t.cn):addD(b,t.cn*(t.cu==='w'?7:1));left=dI(due)}return{l,ago,due,left,od:left!==null&&left<0}}
+const lateN=()=>S.tasks.filter(t=>tst(t).od).length;
+const hwBadge=()=>lateN()?`<i class="bdg">${lateN()}</i>`:'';
+const hwNote=()=>lateN()?`<div class="note" onclick="goSec('hw')">🧹 지연된 집안일 ${lateN()}개 <b>보기</b></div>`:'';
+const HW=[['hc','체크',vHc],['hk','달력',vHk],['he','항목',vHe]];
+function goSec(x){const c=S.sec||'bud';if(c===x)return;ST[c]=tab;S.sec=x;tab=ST[x]||(x==='hw'?'hc':'in');save();render();scrollTo(0,0)}
+function hck(id,on){if(on)HCK[id]=HCK[id]??'';else delete HCK[id];render()}
+function doneH(){const ids=Object.keys(HCK).map(Number);if(!ids.length)return;if(HD>ld(new Date()))return flash('미래 날짜는 기록할 수 없어요');snap();
+ ids.forEach(id=>{const r=S.tlog.find(x=>x.t===id&&x.d===HD),note=(HCK[id]||'').trim();if(r)r.note=note||r.note;else S.tlog.push({id:nid++,t:id,d:HD,note})});
+ HCK={};save();render();flash(`${ids.length}개를 ${+HD.slice(5,7)}/${+HD.slice(8)}에 기록했어요`)}
+function skipT(id){const t=S.tasks.find(x=>x.id===id);if(!t)return;snap();t.sk=ld(new Date());save();render();flash('건너뛰었어요 · 주기를 오늘부터 다시 세요')}
+function vHc(){const T=S.tasks.map(t=>({t,s:tst(t)})).sort((a,b)=>(a.s.od?0:1)-(b.s.od?0:1)||(a.s.od?a.s.left-b.s.left:(b.s.ago??-1)-(a.s.ago??-1))),n=Object.keys(HCK).length;
+ if(!T.length)return `<section class="card"><h2>집안일 체크</h2><div class="empty">아직 항목이 없어요.</div><button class="pri" onclick="tab='he';render()">항목 추가하러 가기</button></section>`;
+ const rows=T.map(({t,s})=>{const on=HCK[t.id]!==undefined;return `<div class="hk${on?' on':''}"><label class="hkr"><input type="checkbox" ${on?'checked':''} onchange="hck(${t.id},this.checked)"><div class="m"><b>${esc(t.n)}</b><span>${s.l?`마지막 ${s.ago===0?'오늘':s.ago+'일 전'} (${+s.l.slice(5,7)}/${+s.l.slice(8)})`:'기록 없음'}${t.cn?' · '+cyTxt(t):''}</span></div><em class="${s.od?'late':s.left!==null&&s.left<=2?'soon':''}">${s.left===null?'':s.left<0?-s.left+'일 지남':s.left===0?'오늘까지':s.left+'일 남음'}</em></label>${on?`<input class="hn" placeholder="메모 (선택)" value="${esc(HCK[t.id])}" oninput="HCK[${t.id}]=this.value">`:t.cn?`<a class="skl" onclick="skipT(${t.id})">건너뛰기</a>`:''}</div>`}).join('');
+ return `<section class="card"><h2>실시한 날짜<small>기본은 오늘이에요</small></h2><input type="date" value="${HD}" onchange="HD=this.value||HD" style="margin:0"></section>
+ <section class="card"><h2>집안일 ${T.length}개<small>${lateN()?'지연 '+lateN()+'개':'지연된 항목 없음'}</small></h2>${rows}</section>${n?`<div class="cbar"><button class="pri" onclick="doneH()">확인 · ${n}개 기록</button></div>`:''}`}
+const hsel=()=>mk(HS)===HM?HS:HM+'-01';
+function hm(k){HM=addM(HM,k);render()}
+function delR(id){snap();S.tlog=S.tlog.filter(r=>r.id!==id);save();render()}
+function addR(){const id=+$('#hat').value,d=hsel();if(S.tlog.some(r=>r.t===id&&r.d===d))return flash('이미 기록돼 있어요');snap();S.tlog.push({id:nid++,t:id,d,note:''});save();render()}
+function vHk(){const[y,m]=HM.split('-').map(Number),f=new Date(y,m-1,1).getDay(),n=new Date(y,m,0).getDate(),c={},sd=hsel(),td=ld(new Date());
+ S.tlog.forEach(r=>{if(mk(r.d)===HM&&(!HF||r.t===HF))c[r.d]=(c[r.d]||0)+1});
+ let g='';for(let i=0;i<f;i++)g+='<i></i>';for(let d=1;d<=n;d++){const k=HM+'-'+pad(d);g+=`<button class="cd${k===sd?' on':''}${k===td?' td':''}" onclick="HS='${k}';render()"><b>${d}</b><span>${c[k]?c[k]+'개':''}</span></button>`}
+ const day=S.tlog.filter(r=>r.d===sd).map(r=>({r,t:S.tasks.find(t=>t.id===r.t)})).filter(x=>x.t);
+ return `<section class="card"><div class="hmn"><button onclick="hm(-1)">‹</button><b>${y}년 ${m}월</b><button onclick="hm(1)">›</button></div><label style="margin-bottom:8px">보기<select onchange="HF=+this.value;render()"><option value="0">전체 항목</option>${S.tasks.map(t=>`<option value="${t.id}"${HF===t.id?' selected':''}>${esc(t.n)}</option>`).join('')}</select></label><div class="cal">${[...'일월화수목금토'].map(x=>`<em>${x}</em>`).join('')}${g}</div></section>
+ <section class="card"><h2>${+sd.slice(5,7)}월 ${+sd.slice(8)}일 기록<small>${day.length}개</small></h2>${day.length?day.map(({r,t})=>`<div class="swr"><button class="swd" onclick="delR(${r.id})">삭제</button><div class="swc it"><div class="m"><b>${esc(t.n)}</b>${r.note?`<span>${esc(r.note)}</span>`:''}</div></div></div>`).join(''):'<div class="empty">이 날 기록이 없어요.</div>'}${S.tasks.length?`<div class="addc" style="margin-top:12px"><select id="hat">${S.tasks.map(t=>`<option value="${t.id}">${esc(t.n)}</option>`).join('')}</select><button onclick="addR()">기록 추가</button></div>`:''}</section>`}
+function addT(name){const el=$('#tn'),n=(name||(el?el.value:'')).trim();if(!n)return;if(S.tasks.some(t=>t.n===n))return flash('이미 있는 항목이에요');
+ snap();S.tasks.push({id:nid++,n,cu:'',cn:0});save();render();if(!name){const x=$('#tn');x&&x.focus()}}
+function delT(id){snap();S.tasks=S.tasks.filter(t=>t.id!==id);S.tlog=S.tlog.filter(r=>r.t!==id);delete HCK[id];if(HE===id)HE=null;save();render()}
+function editT(id){if(Date.now()-lastDrag<400||Date.now()-tapClosed<400)return;HE=id;render();scrollTo(0,0)}
+function saveT(){const t=S.tasks.find(x=>x.id===HE),n=$('#en').value.trim(),cu=$('#ecu').value,cn=Math.round(+$('#ecn').value)||0;
+ if(!n)return flash('이름을 입력하세요');if(S.tasks.some(x=>x.n===n&&x.id!==HE))return flash('이미 있는 항목이에요');if(cu&&!(cn>0))return flash('주기 숫자를 입력하세요');
+ snap();t.n=n;t.cu=cu;t.cn=cu?cn:0;HE=null;save();render();flash('저장했어요')}
+function mvT(i,d){const j=i+d;if(j<0||j>=S.tasks.length)return;snap();[S.tasks[i],S.tasks[j]]=[S.tasks[j],S.tasks[i]];save();render()}
+function vHe(){const ed=S.tasks.find(t=>t.id===HE),N=S.tasks.length,op=(v,l)=>`<option value="${v}"${ed&&ed.cu===v?' selected':''}>${l}</option>`;
+ const hist=ed?S.tlog.filter(r=>r.t===ed.id).sort((a,b)=>b.d.localeCompare(a.d)).slice(0,8).map(r=>`<div class="hs">${r.d}${r.note?' · '+esc(r.note):''}</div>`).join(''):'';
+ const edit=ed?`<section class="card"><h2>항목 수정</h2><label>이름<input id="en" value="${esc(ed.n)}"></label><div class="grid" style="margin-top:10px"><label>주기<select id="ecu">${op('','주기 없음')}${op('d','일마다')}${op('w','주마다')}${op('m','개월마다')}</select></label><label>숫자<input id="ecn" type="number" inputmode="numeric" value="${ed.cn||''}" placeholder="예: 14"></label></div><div class="grid"><button class="pri" onclick="saveT()">저장</button><button onclick="HE=null;render()">취소</button></div>${hist?`<h2 style="margin-top:4px">최근 기록</h2>${hist}`:''}</section>`:'';
+ const rows=S.tasks.map((t,i)=>HO?`<div class="fo"><span class="fn">${esc(t.n)}</span><button onclick="mvT(${i},-1)"${i?'':' disabled'}>▲</button><button onclick="mvT(${i},1)"${i<N-1?'':' disabled'}>▼</button></div>`:`<div class="swr"><button class="swd" onclick="delT(${t.id})">삭제</button><div class="swc it"><div class="m" onclick="editT(${t.id})"><b>${esc(t.n)}</b><span>${t.cn?cyTxt(t)+' · ':''}기록 ${S.tlog.filter(r=>r.t===t.id).length}회</span></div></div></div>`).join('');
+ const free=PRE.filter(p=>!S.tasks.some(t=>t.n===p));
+ return edit+`<section class="card"><h2>항목 추가</h2><div class="addc"><input id="tn" placeholder="예: 욕실 청소" enterkeyhint="done" onkeydown="if(event.key==='Enter')addT()"><button onclick="addT()">추가</button></div>${free.length?`<div class="hint" style="margin:10px 0 6px">자주 쓰는 항목</div><div class="chips" style="margin:0">${free.map(p=>`<span class="chip" onclick="addT('${p}')">+ ${p}</span>`).join('')}</div>`:''}</section>
+ <section class="card"><h2>항목 ${N}개<small>${HO?'▲▼로 순서 변경':'누르면 수정 · 밀어서 삭제'}</small></h2>${N?`<div class="fbar"><button onclick="HO=!HO;render()">${HO?'순서 변경 완료':'↕ 순서 변경'}</button></div>`+rows:'<div class="empty">아직 항목이 없어요. 위에서 추가하세요.</div>'}</section>`}
+const phv=(ym,k)=>{const r=S.utils.find(u=>u.ym===ym);return r?r[k]:''};
+function phU(){const ym=$('#uy').value;[['e','#ue'],['g','#ug'],['w','#uw']].forEach(([k,i])=>{$(i).placeholder=phv(ym,k)!==''?'현재 '+phv(ym,k):'0'})}
 /* shell */
 const TABS=[['in','입력',vInW],['db','대시보드',vDb],['ut','광열비',vUt],['bd','예산',vBd],['yr','연간',vYr],['st','설정',vSt]];
-function render(){updUndo();const v=TABS.find(t=>t[0]===tab);$('#app').innerHTML=v[2]();$('#vm').value=S.vm;
- $('#nav').innerHTML=TABS.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="tab='${t[0]}';render();scrollTo(0,0)">${t[1]}</button>`).join('')}
+function render(){updUndo();const hw=S.sec==='hw',T=hw?HW:TABS,on=T.find(t=>t[0]===tab)||T[0];tab=on[0];
+ $('#app').innerHTML=on[2]();$('#vm').value=S.vm;$('#vm').style.display=hw?'none':'';
+ $('#hsw').innerHTML=`<button class="${hw?'':'on'}" onclick="goSec('bud')">💴 가계부</button><button class="${hw?'on':''}" onclick="goSec('hw')">🧹 집안일${hwBadge()}</button>`;
+ $('#nav').innerHTML=T.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="tab='${t[0]}';render();scrollTo(0,0)">${t[1]}</button>`).join('')}
 $('#vm').onchange=function(){if(this.value){S.vm=this.value;save();render()}};
 render();
 </script></body></html>
