@@ -114,6 +114,11 @@ nav button{font-size:12px}input[type=search]{-webkit-appearance:none;appearance:
 .skl{display:block;text-align:right;font-size:12px;color:var(--mute);text-decoration:underline;margin-top:2px;cursor:pointer}
 .cbar{position:sticky;bottom:calc(66px + env(safe-area-inset-bottom,0px));padding:8px 0;z-index:4}
 .hmn{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.hmn button{width:42px;padding:6px 0;font-size:18px}.addc select{flex:1;min-width:0;margin:0}
+textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--ink);background:var(--soft);border:1px solid transparent;border-radius:12px;padding:10px;resize:vertical}textarea:focus{outline:0;background:var(--card);border-color:var(--ai)}
+.dr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.dr:last-child{border-bottom:0}.dr small{color:var(--mute);font-weight:400}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;text-decoration:none}.stk{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--soft);margin:2px 0 10px}.stk i{display:block;height:100%}
+.rk{margin-bottom:12px}.rt{display:flex;justify-content:space-between;font-size:14px}.rs{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}.rk .bar{margin:4px 0}
+@media(max-width:400px){nav button{font-size:11px}}
 </style></head><body>
 <header><div class="hrow"><h1>가계부</h1><input type="month" id="vm" aria-label="조회 월"><button id="ub" class="ghost" onclick="undo()">↩ 되돌리기</button></div><div id="hsw" class="seg hsw"></div></header>
 <main id="app"></main>
@@ -132,7 +137,7 @@ reg:['買い物','外食','デート費','ガソリン代','医療費'],irr:['�
 budget:{'買い物':30000,'外食':10000,'デート費':5000,'ガソリン代':8500,'医療費':5000},vm:mk(today)});
 let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S)S=seed();
-function mig(){S.fixed.forEach(f=>{if(!f.h){f.h=[['0000-01',+f.a||0]];delete f.a}});S.inc=S.inc||[];S.icat=S.icat||['급여','상여','임시수입'];S.tasks=S.tasks||[];S.tlog=S.tlog||[]}mig();
+function mig(){S.fixed.forEach(f=>{if(!f.h){f.h=[['0000-01',+f.a||0]];delete f.a}});S.inc=S.inc||[];S.icat=S.icat||['급여','상여','임시수입'];S.tasks=S.tasks||[];S.tlog=S.tlog||[];S.sv=S.sv||[];S.memo=S.memo||{}}mig();
 let H=[];try{H=JSON.parse(localStorage.getItem(KEY+'-h'))||[]}catch(e){}
 let tab='in';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));localStorage.setItem(KEY+'-h',JSON.stringify(H))}catch(e){}};
@@ -148,13 +153,13 @@ const entM=(ym,f=()=>true)=>S.entries.filter(e=>mk(e.date)===ym&&f(e)).reduce((s
 const tot=ym=>{const fx=fixedBase(ym)+uM(ym),rg=entM(ym,e=>S.reg.includes(e.cat)),ir=entM(ym,e=>!S.reg.includes(e.cat));return{fx,rg,ir,all:fx+rg+ir}};
 /* views */
 function vIn(){
- const ed=S.entries.find(e=>e.id===EID),q=Q.trim().toLowerCase(),o=c=>`<option${ed&&ed.cat===c?' selected':''}>${esc(c)}</option>`,list=S.entries.filter(e=>q?[e.shop,e.cat,e.note,e.amt,e.date].join(' ').toLowerCase().includes(q):(LV==='cal'?e.date===cdSel():mk(e.date)===S.vm)).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
+ const ed=S.entries.find(e=>e.id===EID),q=Q.trim().toLowerCase(),o=c=>`<option${ed&&ed.cat===c?' selected':''}>${esc(c)}</option>`,list=S.entries.filter(e=>q?qsm(e):(LV==='cal'?e.date===cdSel():mk(e.date)===S.vm)).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
  return `<section class="card"><h2>${ed?'지출 수정':'지출 입력'}<small>${ed?'고친 뒤 수정 저장을 누르세요':'날짜는 오늘로 시작해요'}</small></h2><div class="grid">
  <label>날짜<input id="fd" type="date" value="${ed?ed.date:ld(new Date())}"></label>
  <label>큰항목<select id="fc">${ed&&![...S.reg,...S.irr].includes(ed.cat)?o(ed.cat):''}${S.reg.map(o).join('')}<optgroup label="비정기">${S.irr.map(o).join('')}</optgroup></select></label>
  <label class="w2">가게/내용<input id="fs" autocomplete="off" oninput="upS()" onfocus="upS()" onblur="setTimeout(()=>{SG=[];const g=$('#sg');g&&(g.innerHTML='')},250)" value="${esc(ed?ed.shop:'')}"><div id="sg" class="sg"></div></label><label class="w2">금액(엔)<div class="amt"><input id="fa" type="text" inputmode="numeric" autocomplete="off" oninput="prevA()" value="${ed?(ed.ex||ed.amt):''}"><button type="button" class="plus" aria-label="더하기" onclick="plusA()">+</button></div><div id="ap" class="ap"></div></label><label class="w2">비고<input id="fn" value="${esc(ed?ed.note:'')}"></label></div>
  <button class="pri" onclick="addE()">${ed?'수정 저장':'추가'}</button>${ed?'<button style="width:100%;margin-top:8px" onclick="EID=null;render()">취소</button>':''}</section>
- ${calCard()}<section class="card"><h2>${q?'검색 결과':S.vm+' 지출 내역'}<small>${list.length}건 · ${yen(sum)}</small></h2><input id="q" type="search" enterkeyhint="search" placeholder="🔍 가게·금액·메모 검색 (전체 기간)" value="${esc(Q)}" onchange="setQ(this.value)" style="margin:0 0 8px">${list.length?'<div class="hint" style="margin:-4px 0 4px">← 왼쪽으로 밀면 삭제 버튼이 나와요</div>':''}${list.length?grp(list,e=>`<div class="swr"><button class="swd" onclick="delE(${e.id})">삭제</button><div class="swc it"><div class="m" onclick="editE(${e.id})"><b>${esc(e.shop||e.cat)}</b><span>${esc(e.cat)} <span class="tag">${S.reg.includes(e.cat)?'정기':'비정기'}</span>${e.ex?' · '+esc(e.ex):''}${e.note?' · '+esc(e.note):''}</span></div><b>${yen(e.amt)}</b></div></div>`):'<div class="empty">이 달의 지출이 아직 없어요. 위에서 첫 지출을 추가하세요.</div>'}</section>`}
+ ${calCard()}<section class="card"><h2>${q?'검색 결과':S.vm+' 지출 내역'}<small>${list.length}건 · ${yen(sum)}</small></h2><input id="q" type="search" enterkeyhint="search" placeholder="🔍 검색 · 쉼표로 여러 개 (フェルナ、カネスエ)" value="${esc(Q)}" onchange="setQ(this.value)" style="margin:0 0 8px">${list.length?'<div class="hint" style="margin:-4px 0 4px">← 왼쪽으로 밀면 삭제 버튼이 나와요</div>':''}${list.length?grp(list,e=>`<div class="swr"><button class="swd" onclick="delE(${e.id})">삭제</button><div class="swc it"><div class="m" onclick="editE(${e.id})"><b>${esc(e.shop||e.cat)}</b><span>${esc(e.cat)} <span class="tag">${S.reg.includes(e.cat)?'정기':'비정기'}</span>${e.ex?' · '+esc(e.ex):''}${e.note?' · '+esc(e.note):''}</span></div><b>${yen(e.amt)}</b></div></div>`):'<div class="empty">이 달의 지출이 아직 없어요. 위에서 첫 지출을 추가하세요.</div>'}</section>`}
 function addE(){const date=$('#fd').value,amt=calc($('#fa').value);
  if(!date)return flash('날짜를 입력하세요');if(!(amt>0))return flash($('#fa').value.trim()?'금액 형식을 확인하세요 (예: 500+300)':'금액을 입력하세요');
  snap();const o={date,cat:$('#fc').value,shop:$('#fs').value.trim(),amt,note:$('#fn').value.trim(),ex:exOf($('#fa').value)},up=EID;if(EID){Object.assign(S.entries.find(e=>e.id===EID)||{},o);EID=null}else S.entries.push({id:Date.now(),...o});S.ld=date;S.vm=mk(date);Q='';save();render();
@@ -168,7 +173,7 @@ function vDb(){
  const ut=Array.from({length:12},(_,i)=>{const x=y+'-'+pad(i+1),a=uM(x),b=uM(addM(x,-12)),r=S.utils.find(u=>u.ym===x),f=(v,ok)=>ok?yen(v):'–';return`<tr><td>${i+1}월</td><td>${f(r&&r.e,r)}</td><td>${f(r&&r.g,r)}</td><td>${f(r&&r.w,r)}</td><td>${f(a,a)}</td><td>${f(b,b)}</td><td class="${a&&b?d2(a-b):''}">${a&&b?sg(a-b):'–'}</td></tr>`}).join('');
  return `<section class="card hero"><div class="lab">${y}년 ${+m.slice(5)}월 총지출</div><div class="big">${yen(t.all)}</div><div class="${d2(d)}">전월 대비 ${sg(d)} (${p.all?pct(d/p.all):'–'})</div>
  <div class="row3"><div><span>고정비</span>${yen(t.fx)}</div><div><span>정기 변동비</span>${yen(t.rg)}</div><div><span>비정기</span>${yen(t.ir)}</div></div></section>
- ${incCard(m)}${goalCard()}<section class="card"><h2>카테고리별 비교<small>정기 변동비</small></h2><div class="sc"><table><tr><th>항목</th><th>이번달</th><th>지난달</th><th>차이</th><th>증감률</th></tr>${cr}</table></div></section>
+ ${incCard(m)}${goalCard()}${fixCard(m)}<section class="card"><h2>카테고리별 비교<small>정기 변동비</small></h2><div class="sc"><table><tr><th>항목</th><th>이번달</th><th>지난달</th><th>차이</th><th>증감률</th></tr>${cr}</table></div></section>
  <section class="card"><h2>최근 6개월<small>일상지출 = 고정비+정기 변동비</small></h2>${bars}</section>
  ${irCard(y)}<section class="card"><h2>${y}년 광열비 추이<small>전년동월 비교</small></h2><div class="sc"><table><tr><th>월</th><th>전기</th><th>가스</th><th>수도</th><th>합계</th><th>작년</th><th>증감</th></tr>${ut}</table></div></section>`}
 function vUt(){
@@ -235,11 +240,11 @@ function endSw(){if(!sw)return;const{c,r,o,dx,drag}=sw;sw=null;c.style.transitio
 document.addEventListener('pointerup',endSw);document.addEventListener('pointercancel',endSw);
 /* category chips */
 let CK=null;
-const chips=g=>S[g].map((n,i)=>{const k=g+':'+i,on=CK===k;
+const chips=g=>CO===g?S[g].map((n,i)=>`<div class="fo" style="width:100%"><span class="fn">${esc(n)}</span><button onclick="mvC('${g}',${i},-1)"${i?'':' disabled'}>▲</button><button onclick="mvC('${g}',${i},1)"${i<S[g].length-1?'':' disabled'}>▼</button></div>`).join(''):S[g].map((n,i)=>{const k=g+':'+i,on=CK===k;
  if(on&&CE===k)return`<span class="chip sel" onclick="event.stopPropagation()"><input id="cin" class="cin" value="${esc(n)}" onkeydown="if(event.key==='Enter')renC('${g}',${i});if(event.key==='Escape'){CE=null;render()}"><b class="ed" onclick="renC('${g}',${i})">저장</b><b class="mu" onclick="CE=null;render()">취소</b></span>`;
  return`<span class="chip${on?' sel':''}" onclick="selC('${k}')">${esc(n)}${on?`<b class="ed" onclick="event.stopPropagation();CE='${k}';render();const c=$('#cin');c&&(c.focus(),c.select())">수정</b><b onclick="event.stopPropagation();delC('${g}',${i})">삭제</b>`:''}</span>`}).join('')||'<span class="empty">아직 없어요</span>';
-const catCard=()=>`<section class="card"><h2>정기 변동비<small>예산을 짜는 항목</small></h2><div class="chips">${chips('reg')}</div><div class="addc"><input id="nc_reg" placeholder="새 항목 이름" enterkeyhint="done" onkeydown="if(event.key==='Enter')addC('reg')"><button onclick="addC('reg')">추가</button></div></section>
- <section class="card"><h2>비정기 지출<small>가끔 크게 나가는 항목</small></h2><div class="chips">${chips('irr')}</div><div class="addc"><input id="nc_irr" placeholder="새 항목 이름" enterkeyhint="done" onkeydown="if(event.key==='Enter')addC('irr')"><button onclick="addC('irr')">추가</button></div><div class="hint" style="margin:10px 0 0">항목을 누르면 수정·삭제 버튼이 나와요</div></section>`;
+const catCard=()=>`<section class="card"><h2>정기 변동비<small>예산을 짜는 항목</small></h2><div class="chips">${chips('reg')}</div>${ordBtn('reg')}<div class="addc"><input id="nc_reg" placeholder="새 항목 이름" enterkeyhint="done" onkeydown="if(event.key==='Enter')addC('reg')"><button onclick="addC('reg')">추가</button></div></section>
+ <section class="card"><h2>비정기 지출<small>가끔 크게 나가는 항목</small></h2><div class="chips">${chips('irr')}</div>${ordBtn('irr')}<div class="addc"><input id="nc_irr" placeholder="새 항목 이름" enterkeyhint="done" onkeydown="if(event.key==='Enter')addC('irr')"><button onclick="addC('irr')">추가</button></div><div class="hint" style="margin:10px 0 0">항목을 누르면 수정·삭제 버튼이 나와요</div></section>`;
 function selC(k){CK=CK===k?null:k;CE=null;render()}
 function addC(g){const el=$('#nc_'+g),n=el.value.trim();if(!n)return;
  if((g==='icat'?S.icat:[...S.reg,...S.irr]).includes(n))return flash('이미 있는 항목이에요');
@@ -292,7 +297,7 @@ function editI(id){if(Date.now()-lastDrag<400||Date.now()-tapClosed<400)return;I
 const salNote=()=>{const t=ld(new Date()),cm=mk(t),pm=addM(cm,-1),p=S.inc.filter(e=>e.cat===SAL()&&mk(e.date)===pm).sort((a,b)=>b.date.localeCompare(a.date))[0];
  if(!p||S.inc.some(e=>e.cat===SAL()&&mk(e.date)===cm)||+t.slice(8)<+p.date.slice(8))return'';
  return `<div class="note" onclick="MODE='inc';render()">💴 이번 달 급여를 아직 입력하지 않았어요 <b>입력하기</b></div>`};
-function vInW(){return hwNote()+salNote()+`<div class="seg"><button class="${MODE==='exp'?'on':''}" onclick="MODE='exp';render()">지출</button><button class="${MODE==='inc'?'on':''}" onclick="MODE='inc';render()">수입</button></div>`+(MODE==='inc'?vInc():vIn())}
+
 function vInc(){const ed=S.inc.find(e=>e.id===IID),o=c=>`<option${ed&&ed.cat===c?' selected':''}>${esc(c)}</option>`,list=S.inc.filter(e=>mk(e.date)===S.vm).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
  return `<section class="card"><h2>${ed?'수입 수정':'수입 입력'}<small>${ed?'고친 뒤 수정 저장을 누르세요':'날짜는 오늘로 시작해요'}</small></h2><div class="grid">
  <label>날짜<input id="fd" type="date" value="${ed?ed.date:ld(new Date())}"></label><label>종류<select id="fc">${ed&&!S.icat.includes(ed.cat)?o(ed.cat):''}${S.icat.map(o).join('')}</select></label>
@@ -307,21 +312,19 @@ function calCard(){const sw=`<div class="seg sm"><button class="${LV==='list'?'o
  let c='';for(let i=0;i<f;i++)c+='<i></i>';
  for(let d=1;d<=n;d++){const k=S.vm+'-'+pad(d),v=by[k];c+=`<button class="cd${k===sd?' on':''}${k===tdy?' td':''}" onclick="SD='${k}';render()"><b>${d}</b><span>${v?(v/1000).toFixed(1).replace('.0','')+'k':''}</span>${ib[k]?'<u></u>':''}</button>`}
  return sw+`<section class="card"><div class="cal">${[...'일월화수목금토'].map(x=>`<em>${x}</em>`).join('')}${c}</div><div class="hint" style="margin:10px 0 0">${+sd.slice(5,7)}월 ${+sd.slice(8)}일 · 지출 ${yen(by[sd]||0)} · 초록 점은 수입이 있는 날</div></section>`}
-const incCard=m=>{const a=incM(m),sal=salM(m),sp=tot(m).all,net=a-sp;
- return `<section class="card"><h2>${m} 수입 · 수지</h2><div class="row3 inc3"><div><span>수입</span>${yen(a)}</div><div><span>총지출</span>${yen(sp)}</div><div><span>남은 돈</span><b class="${net<0?'up':'dn'}">${sg(net)}</b></div></div><div class="hint" style="margin:10px 0 0">${a?`저축률 ${Math.round(net/a*100)}% · 급여 ${yen(sal)} · 기타 ${yen(a-sal)}`:'이번 달 수입이 아직 없어요. 입력 탭의 수입에서 추가하세요.'}</div></section>`};
-function goalSaved(){const g=S.goal,cm=mk(ld(new Date()));let s=+g.base||0;for(let x=g.start;x<=cm;x=addM(x,1))s+=incM(x)-tot(x).all;return s}
+
 function saveG(){const t=calc($('#gt').value),d=$('#gd').value;if(!(t>0)||!d)return flash('목표 금액과 기한을 입력하세요');snap();
  S.goal={name:$('#gn').value.trim()||'저축 목표',target:t,base:calc($('#gb').value)||0,start:S.goal?S.goal.start:mk(ld(new Date())),due:d};GE=false;save();render()}
 function delG(){snap();S.goal=null;GE=false;save();render()}
 const goalCard=()=>{const g=S.goal;
- if(!g||GE)return `<section class="card"><h2>저축 목표${g?'<small>수정</small>':''}</h2><div class="grid"><label class="w2">목표 이름<input id="gn" value="${esc(g?g.name:'')}" placeholder="예: 여행 자금"></label><label>목표 금액<input id="gt" inputmode="numeric" value="${g?g.target:''}"></label><label>지금 모은 돈<input id="gb" inputmode="numeric" value="${g?g.base:''}" placeholder="0"></label><label class="w2">기한(월)<input id="gd" type="month" value="${g?g.due:''}"></label></div><button class="pri" onclick="saveG()">저장</button>${g?'<button style="width:100%;margin-top:8px" onclick="GE=false;render()">취소</button><button style="width:100%;margin-top:8px;color:var(--bad)" onclick="delG()">목표 삭제</button>':''}</section>`;
- const cm=mk(ld(new Date())),sv=goalSaved(),rem=Math.max(0,g.target-sv),r=Math.min(1,Math.max(0,sv/g.target)),ml=mdiff(g.due,cm);
- return `<section class="card"><h2>${esc(g.name)}<small>기한 ${g.due}</small></h2><div class="big2">${yen(sv)} <small>/ ${yen(g.target)}</small></div><div class="bar"><i style="width:${r*100}%"></i></div><div class="bs"><span>${Math.round(r*100)}%</span><span>남은 금액 ${yen(rem)}</span></div><div class="hint" style="margin:10px 0 0">${rem===0?'🎉 목표를 달성했어요!':ml>0?`남은 ${ml}개월 · 매달 ${yen(Math.ceil(rem/ml))} 저축하면 달성`:'기한이 지났어요. 수정에서 기한을 늘려 보세요.'} · 모은 돈은 (수입−지출)로 계산해요</div><button style="margin-top:10px" onclick="GE=true;render()">수정</button></section>`};
+ if(!g||GE)return `<section class="card"><h2>저축 목표${g?'<small>수정</small>':''}</h2><div class="grid"><label class="w2">목표 이름<input id="gn" value="${esc(g?g.name:'')}" placeholder="예: 여행 자금"></label><label>목표 금액<input id="gt" inputmode="numeric" value="${g?g.target:''}"></label><label>지금까지 모은 돈<input id="gb" inputmode="numeric" value="${g?g.base:''}" placeholder="0"></label><label class="w2">기한(월)<input id="gd" type="month" value="${g?g.due:''}"></label></div><button class="pri" onclick="saveG()">저장</button>${g?'<button style="width:100%;margin-top:8px" onclick="GE=false;render()">취소</button><button style="width:100%;margin-top:8px;color:var(--bad)" onclick="delG()">목표 삭제</button>':''}<div class="hint" style="margin:10px 0 0">모은 돈은 입력 탭의 <b>저축</b>에 기록한 금액을 더해서 계산해요.</div></section>`;
+ const cm=mk(ld(new Date())),sv=goalSaved(),rem=Math.max(0,g.target-sv),r=Math.min(1,Math.max(0,sv/g.target)),ml=mdiff(g.due,cm),avg=[0,1,2].reduce((s,k)=>s+svM(addM(cm,-k)),0)/3,eta=avg>0&&rem>0?addM(cm,Math.ceil(rem/avg)):'';
+ return `<section class="card"><h2>${esc(g.name)}<small>기한 ${g.due}</small></h2><div class="big2">${yen(sv)} <small>/ ${yen(g.target)}</small></div><div class="bar"><i style="width:${r*100}%"></i></div><div class="bs"><span>${Math.round(r*100)}%</span><span>남은 금액 ${yen(rem)}</span></div><div class="hint" style="margin:10px 0 0">${rem===0?'🎉 목표를 달성했어요!':ml>0?`남은 ${ml}개월 · 매달 ${yen(Math.ceil(rem/ml))} 저축하면 달성`:'기한이 지났어요. 수정에서 기한을 늘려 보세요.'}${avg>0&&rem>0?` · 최근 3개월 평균 ${yen(Math.round(avg))} 저축 → ${eta} 달성 예상`:''}${rem>0&&!svM(cm)?' · 이번 달 저축을 아직 기록하지 않았어요':''}</div><button style="margin-top:10px" onclick="GE=true;render()">수정</button></section>`};
 const salCard=()=>{const ms=[-5,-4,-3,-2,-1,0].map(k=>{const x=addM(S.vm,k);return{x,v:salM(x)}}),nz=ms.filter(o=>o.v),mx=Math.max(1,...ms.map(o=>o.v));
  return `<section class="card"><h2>월급 추이<small>최근 6개월</small></h2>${ms.map(o=>`<div class="br"><span>${o.x.slice(2)}</span><i style="width:${o.v/mx*100}%"></i><b>${o.v?yen(o.v):'–'}</b></div>`).join('')}<div class="hint" style="margin:8px 0 0">${nz.length?`평균 ${yen(Math.round(nz.reduce((s,o)=>s+o.v,0)/nz.length))} · 최고 ${yen(Math.max(...nz.map(o=>o.v)))} · 최저 ${yen(Math.min(...nz.map(o=>o.v)))}`:'급여를 입력하면 추이와 평균이 보여요.'}</div></section>`};
 const incYr=y=>{const cm=mk(ld(new Date()));let a=0,b=0;const r=Array.from({length:12},(_,i)=>{const x=y+'-'+pad(i+1),n=incM(x);if(x>cm||!(n||S.entries.some(e=>mk(e.date)===x)))return'';const sp=tot(x).all;a+=n;b+=sp;return`<tr><td>${i+1}월</td><td>${yen(n)}</td><td>${yen(sp)}</td><td class="${d2(sp-n)}">${sg(n-sp)}</td></tr>`}).join('');
  return `<section class="card"><h2>${y}년 수입 · 지출 · 수지</h2><div class="sc"><table><tr><th>월</th><th>수입</th><th>지출</th><th>수지</th></tr>${r||'<tr><td colspan=4>기록이 없어요</td></tr>'}<tr><td><b>합계</b></td><td><b>${yen(a)}</b></td><td><b>${yen(b)}</b></td><td><b>${sg(a-b)}</b></td></tr></table></div></section>`};
-const catIn=()=>`<section class="card"><h2>수입 종류<small>급여·상여·임시수입 등</small></h2><div class="chips">${chips('icat')}</div><div class="addc"><input id="nc_icat" placeholder="새 종류 이름" enterkeyhint="done" onkeydown="if(event.key==='Enter')addC('icat')"><button onclick="addC('icat')">추가</button></div></section>`;
+const catIn=()=>`<section class="card"><h2>수입 종류<small>급여·상여·임시수입 등</small></h2><div class="chips">${chips('icat')}</div>${ordBtn('icat')}<div class="addc"><input id="nc_icat" placeholder="새 종류 이름" enterkeyhint="done" onkeydown="if(event.key==='Enter')addC('icat')"><button onclick="addC('icat')">추가</button></div></section>`;
 let FO=false,CE=null;
 const SAL=()=>S.salCat||'급여';
 function mvF(i,d){const j=i+d;if(j<0||j>=S.fixed.length)return;snap();[S.fixed[i],S.fixed[j]]=[S.fixed[j],S.fixed[i]];save();render()}
@@ -388,8 +391,47 @@ function vHe(){const ed=S.tasks.find(t=>t.id===HE),N=S.tasks.length,op=(v,l)=>`<
  <section class="card"><h2>항목 ${N}개<small>${HO?'▲▼로 순서 변경':'누르면 수정 · 밀어서 삭제'}</small></h2>${N?`<div class="fbar"><button onclick="HO=!HO;render()">${HO?'순서 변경 완료':'↕ 순서 변경'}</button></div>`+rows:'<div class="empty">아직 항목이 없어요. 위에서 추가하세요.</div>'}</section>`}
 const phv=(ym,k)=>{const r=S.utils.find(u=>u.ym===ym);return r?r[k]:''};
 function phU(){const ym=$('#uy').value;[['e','#ue'],['g','#ug'],['w','#uw']].forEach(([k,i])=>{$(i).placeholder=phv(ym,k)!==''?'현재 '+phv(ym,k):'0'})}
+const qsm=e=>{const t=Q.toLowerCase().split(/[,，、;；]+/).map(x=>x.trim()).filter(Boolean);if(!t.length)return true;const h=[e.shop,e.cat,e.note,e.ex||'',e.amt,e.date].join(' ').toLowerCase();return t.some(x=>h.includes(x))};
+/* v6: reorder categories, savings records, fixed-cost card, analysis tab */
+let CO=null,SID=null;
+const ordBtn=g=>`<div class="fbar" style="margin:0 0 10px"><button onclick="CO=CO==='${g}'?null:'${g}';CK=null;CE=null;render()">${CO===g?'순서 변경 완료':'↕ 순서 변경'}</button></div>`;
+function mvC(g,i,d){const j=i+d;if(j<0||j>=S[g].length)return;snap();[S[g][i],S[g][j]]=[S[g][j],S[g][i]];save();render()}
+const svM=ym=>S.sv.filter(e=>mk(e.date)===ym).reduce((s,e)=>s+e.amt,0);
+function goalSaved(){return (+S.goal.base||0)+S.sv.reduce((s,e)=>s+e.amt,0)}
+function addSv(){const date=$('#fd').value,amt=calc($('#fa').value);if(!date)return flash('날짜를 입력하세요');if(!(amt>0))return flash($('#fa').value.trim()?'금액 형식을 확인하세요 (예: 500+300)':'금액을 입력하세요');
+ snap();const o={date,amt,note:$('#fn').value.trim(),ex:exOf($('#fa').value)},up=SID;
+ if(SID){Object.assign(S.sv.find(e=>e.id===SID)||{},o);SID=null}else S.sv.push({id:nid++,...o});S.vm=mk(date);save();render();flash(up?'수정했어요':'저축을 기록했어요')}
+function delSv(id){snap();S.sv=S.sv.filter(e=>e.id!==id);save();render()}
+function editSv(id){if(Date.now()-lastDrag<400||Date.now()-tapClosed<400)return;SID=id;render();scrollTo(0,0)}
+function vSv(){const ed=S.sv.find(e=>e.id===SID),g=S.goal,list=S.sv.filter(e=>mk(e.date)===S.vm).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id),sum=list.reduce((s,e)=>s+e.amt,0);
+ return `<section class="card"><h2>${ed?'저축 수정':'저축 기록'}<small>${ed?'고친 뒤 수정 저장을 누르세요':'실제로 저축한 금액을 입력해요'}</small></h2><div class="grid"><label class="w2">날짜<input id="fd" type="date" value="${ed?ed.date:ld(new Date())}"></label>
+ <label class="w2">금액(엔)<div class="amt"><input id="fa" type="text" inputmode="numeric" autocomplete="off" oninput="prevA()" value="${ed?(ed.ex||ed.amt):''}"><button type="button" class="plus" aria-label="더하기" onclick="plusA()">+</button></div><div id="ap" class="ap"></div></label>
+ <label class="w2">메모<input id="fn" placeholder="예: 정기예금, NISA" value="${esc(ed?ed.note:'')}"></label></div>
+ <button class="pri" onclick="addSv()">${ed?'수정 저장':'저축 추가'}</button>${ed?'<button style="width:100%;margin-top:8px" onclick="SID=null;render()">취소</button>':''}</section>
+ ${g?`<div class="note" style="cursor:default">🎯 ${esc(g.name)} ${yen(goalSaved())} / ${yen(g.target)}</div>`:''}
+ <section class="card"><h2>${S.vm} 저축 기록<small>${list.length}건 · ${yen(sum)}</small></h2>${list.length?'<div class="hint" style="margin:-4px 0 4px">← 왼쪽으로 밀면 삭제 버튼이 나와요</div>'+grp(list,e=>`<div class="swr"><button class="swd" onclick="delSv(${e.id})">삭제</button><div class="swc it"><div class="m" onclick="editSv(${e.id})"><b>${esc(e.note||'저축')}</b>${e.ex?`<span>${esc(e.ex)}</span>`:''}</div><b class="inc">${yen(e.amt)}</b></div></div>`):'<div class="empty">이 달의 저축 기록이 없어요.</div>'}</section>`}
+function vInW(){const b=(m,l)=>`<button class="${MODE===m?'on':''}" onclick="MODE='${m}';render()">${l}</button>`;return hwNote()+salNote()+`<div class="seg">${b('exp','지출')}${b('inc','수입')}${b('sv','저축')}</div>`+(MODE==='inc'?vInc():MODE==='sv'?vSv():vIn())}
+const incCard=m=>{const a=incM(m),sal=salM(m),sp=tot(m).all,net=a-sp,sv=svM(m);
+ return `<section class="card"><h2>${m} 수입 · 수지</h2><div class="row3 inc3"><div><span>수입</span>${yen(a)}</div><div><span>총지출</span>${yen(sp)}</div><div><span>수지(수입−지출)</span><b class="${net<0?'up':'dn'}">${sg(net)}</b></div></div><div class="hint" style="margin:10px 0 0">${a?`급여 ${yen(sal)} · 기타 ${yen(a-sal)} · `:'이번 달 수입이 아직 없어요 · '}저축 기록 ${yen(sv)}${a?` (저축률 ${Math.round(sv/a*100)}%)`:''}</div></section>`};
+const fixCard=m=>{const u=S.utils.find(r=>r.ym===m),rows=[...S.fixed.filter(f=>f.u).map(f=>({n:f.n,v:amtAt(f,m)})),...(u?[{n:'광열비 (전기·가스·수도)',v:u.e+u.g+u.w}]:[])].filter(x=>x.v>0).sort((a,b)=>b.v-a.v),t=rows.reduce((s,x)=>s+x.v,0);
+ return `<section class="card"><h2>${m} 고정비<small>${yen(t)}</small></h2>${rows.map(x=>`<div class="dr"><span>${esc(x.n)}</span><b>${yen(x.v)} <small>${Math.round(x.v/t*100)}%</small></b></div>`).join('')||'<div class="empty">고정비가 없어요.</div>'}</section>`};
+function setMemo(v){S.memo=S.memo||{};if(v.trim())S.memo[S.vm]=v.trim();else delete S.memo[S.vm];save()}
+function vAn(){const m=S.vm,pm=addM(m,-1),t=tot(m),inc=incM(m),sv=svM(m),mp=(S.memo||{})[pm];
+ const cats=[...S.reg,...S.irr].map(c=>({n:c,a:entM(m,e=>e.cat===c),b:entM(pm,e=>e.cat===c),bud:S.reg.includes(c)?+S.budget[c]||0:0}));
+ const rows=[{n:'고정비',a:fixedBase(m),b:fixedBase(pm)},{n:'광열비',a:uM(m),b:uM(pm)},...cats].filter(x=>x.a||x.b).sort((a,b)=>b.a-a.a),mx=Math.max(1,...rows.map(x=>x.a));
+ const sh={};S.entries.filter(e=>mk(e.date)===m).forEach(e=>{const k=e.shop||'(가게 없음)';(sh[k]=sh[k]||{n:k,a:0,c:0}).a+=e.amt;sh[k].c++});const top=Object.values(sh).sort((a,b)=>b.a-a.a).slice(0,5);
+ const h=[];cats.forEach(x=>{if(x.bud&&x.a>x.bud)h.push(`${x.n}: 예산을 ${yen(x.a-x.bud)} 넘었어요`);if(x.b>0&&x.a>=x.b*1.2&&x.a-x.b>=3000)h.push(`${x.n}: 전월보다 ${yen(x.a-x.b)} (${Math.round((x.a/x.b-1)*100)}%) 늘었어요`)});
+ if(inc>0&&t.fx/inc>=.5)h.push(`고정비가 수입의 ${Math.round(t.fx/inc*100)}%예요`);if(t.all>0&&t.ir/t.all>=.3)h.push(`비정기 지출이 총지출의 ${Math.round(t.ir/t.all*100)}%예요`);
+ const ua=S.utils.find(r=>r.ym===m),ub=S.utils.find(r=>r.ym===addM(m,-12));if(ua&&ub){const a=ua.e+ua.g+ua.w,b=ub.e+ub.g+ub.w;if(b>0&&a>=b*1.2)h.push(`광열비가 작년 같은 달보다 ${Math.round((a/b-1)*100)}% 늘었어요`)}
+ const seg=[['고정비',t.fx,'var(--ai)'],['정기 변동비',t.rg,'#5f7fcf'],['비정기',t.ir,'#c98a1b']];
+ return `${mp?`<div class="note" style="cursor:default">📝 ${pm} 메모: ${esc(mp)}</div>`:''}
+ <section class="card"><h2>${m} 지출 구조<small>총 ${yen(t.all)}</small></h2><div class="stk">${seg.map(([n,v,c])=>t.all?`<i style="width:${v/t.all*100}%;background:${c}"></i>`:'').join('')}</div>${seg.map(([n,v,c])=>`<div class="dr"><span><u class="dot" style="background:${c}"></u>${n}</span><b>${yen(v)} <small>${t.all?Math.round(v/t.all*100):0}%</small></b></div>`).join('')}${inc?`<div class="hint" style="margin:8px 0 0">수입 ${yen(inc)} 대비 · 총지출 ${Math.round(t.all/inc*100)}% · 고정비 ${Math.round(t.fx/inc*100)}% · 저축 ${Math.round(sv/inc*100)}%</div>`:''}</section>
+ <section class="card"><h2>어디에 썼나<small>큰 순서 · 전월 대비</small></h2>${rows.map(x=>{const d=x.a-x.b;return`<div class="rk"><div class="rt"><span>${esc(x.n)}</span><b>${yen(x.a)}</b></div><div class="bar"><i style="width:${x.a/mx*100}%"></i></div><div class="rs"><span class="${d2(d)}">${sg(d)}</span><span>${x.bud?`예산 ${Math.round(x.a/x.bud*100)}%`:''}</span></div></div>`}).join('')||'<div class="empty">이 달의 지출이 없어요.</div>'}</section>
+ <section class="card"><h2>가게별 TOP 5</h2>${top.map(x=>`<div class="dr"><span>${esc(x.n)} <small>${x.c}회</small></span><b>${yen(x.a)}</b></div>`).join('')||'<div class="empty">가게 기록이 없어요.</div>'}</section>
+ <section class="card"><h2>살펴볼 곳</h2>${h.length?h.map(x=>`<div class="dr"><span>${esc(x)}</span></div>`).join(''):'<div class="empty">눈에 띄는 변화가 없어요.</div>'}</section>
+ <section class="card"><h2>${m} 회고 메모<small>개선할 점을 적어 두세요</small></h2><textarea id="mm" rows="3" placeholder="예: 외식이 많았다 → 주 1회로 줄이기" onchange="setMemo(this.value)">${esc((S.memo||{})[m]||'')}</textarea></section>`}
 /* shell */
-const TABS=[['in','입력',vInW],['db','대시보드',vDb],['ut','광열비',vUt],['bd','예산',vBd],['yr','연간',vYr],['st','설정',vSt]];
+const TABS=[['in','입력',vInW],['db','대시보드',vDb],['an','분석',vAn],['ut','광열비',vUt],['bd','예산',vBd],['yr','연간',vYr],['st','설정',vSt]];
 function render(){updUndo();const hw=S.sec==='hw',T=hw?HW:TABS,on=T.find(t=>t[0]===tab)||T[0];tab=on[0];
  $('#app').innerHTML=on[2]();$('#vm').value=S.vm;$('#vm').style.display=hw?'none':'';
  $('#hsw').innerHTML=`<button class="${hw?'':'on'}" onclick="goSec('bud')">💴 가계부</button><button class="${hw?'on':''}" onclick="goSec('hw')">🧹 집안일${hwBadge()}</button>`;
