@@ -419,12 +419,12 @@ const fixCard=m=>{const u=S.utils.find(r=>r.ym===m),rows=[...S.fixed.filter(f=>f
 function setMemo(v){S.memo=S.memo||{};if(v.trim())S.memo[S.vm]=v.trim();else delete S.memo[S.vm];save()}
 function vAn(){const m=S.vm,pm=addM(m,-1),t=tot(m),inc=incM(m),sv=svM(m),mp=(S.memo||{})[pm];
  const cats=[...S.reg,...S.irr].map(c=>({n:c,a:entM(m,e=>e.cat===c&&!e.w),b:entM(pm,e=>e.cat===c&&!e.w),bud:S.reg.includes(c)?+S.budget[c]||0:0}));
- const rows=[{n:'고정비',a:fixedBase(m),b:fixedBase(pm)},{n:'광열비',a:uM(m),b:uM(pm)},{n:'용돈 확보',a:t.al,b:tot(pm).al},...cats].filter(x=>x.a||x.b).sort((a,b)=>b.a-a.a),mx=Math.max(1,...rows.map(x=>x.a));
+ const rows=[{n:'고정비',a:fixedBase(m),b:fixedBase(pm)},{n:'광열비',a:uM(m),b:uM(pm)},{n:'용돈',a:t.al,b:tot(pm).al},...cats].filter(x=>x.a||x.b).sort((a,b)=>b.a-a.a),mx=Math.max(1,...rows.map(x=>x.a));
  const sh={};S.entries.filter(e=>mk(e.date)===m).forEach(e=>{const k=e.shop||'(가게 없음)';(sh[k]=sh[k]||{n:k,a:0,c:0}).a+=e.amt;sh[k].c++});const top=Object.values(sh).sort((a,b)=>b.a-a.a).slice(0,5);
  const h=[];cats.forEach(x=>{if(x.bud&&x.a>x.bud)h.push(`${x.n}: 예산을 ${yen(x.a-x.bud)} 넘었어요`);if(x.b>0&&x.a>=x.b*1.2&&x.a-x.b>=3000)h.push(`${x.n}: 전월보다 ${yen(x.a-x.b)} (${Math.round((x.a/x.b-1)*100)}%) 늘었어요`)});
  if(inc>0&&t.fx/inc>=.5)h.push(`고정비가 수입의 ${Math.round(t.fx/inc*100)}%예요`);if(t.all>0&&t.ir/t.all>=.3)h.push(`비정기 지출이 총지출의 ${Math.round(t.ir/t.all*100)}%예요`);
  const ua=S.utils.find(r=>r.ym===m),ub=S.utils.find(r=>r.ym===addM(m,-12));if(ua&&ub){const a=ua.e+ua.g+ua.w,b=ub.e+ub.g+ub.w;if(b>0&&a>=b*1.2)h.push(`광열비가 작년 같은 달보다 ${Math.round((a/b-1)*100)}% 늘었어요`)}
- const seg=[['고정비',t.fx,'var(--ai)'],['정기 변동비',t.rg,'#5f7fcf'],['비정기',t.ir,'#c98a1b'],...(t.al?[['용돈 확보',t.al,'#6b8f71']]:[])];
+ const seg=[['고정비',t.fx,'var(--ai)'],['정기 변동비',t.rg,'#5f7fcf'],['비정기',t.ir,'#c98a1b'],...(t.al?[['용돈(확보+초과)',t.al,'#6b8f71']]:[])];
  return `${mp?`<div class="note" style="cursor:default">📝 ${pm} 메모: ${esc(mp)}</div>`:''}
  <section class="card"><h2>${m} 지출 구조<small>총 ${yen(t.all)}</small></h2><div class="stk">${seg.map(([n,v,c])=>t.all?`<i style="width:${v/t.all*100}%;background:${c}"></i>`:'').join('')}</div>${seg.map(([n,v,c])=>`<div class="dr"><span><u class="dot" style="background:${c}"></u>${n}</span><b>${yen(v)} <small>${t.all?Math.round(v/t.all*100):0}%</small></b></div>`).join('')}${inc?`<div class="hint" style="margin:8px 0 0">수입 ${yen(inc)} 대비 · 총지출 ${Math.round(t.all/inc*100)}% · 고정비 ${Math.round(t.fx/inc*100)}% · 저축 ${Math.round(sv/inc*100)}%</div>`:''}</section>
  <section class="card"><h2>어디에 썼나<small>큰 순서 · 전월 대비</small></h2>${rows.map(x=>{const d=x.a-x.b;return`<div class="rk"><div class="rt"><span>${esc(x.n)}</span><b>${yen(x.a)}</b></div><div class="bar"><i style="width:${x.a/mx*100}%"></i></div><div class="rs"><span class="${d2(d)}">${sg(d)}</span><span>${x.bud?`예산 ${Math.round(x.a/x.bud*100)}%`:''}</span></div></div>`}).join('')||'<div class="empty">이 달의 지출이 없어요.</div>'}</section>
@@ -438,22 +438,22 @@ const bdMini=m=>{const[a,b]=bdTot(m),d=b-a;return b?`<section class="card"><h2>$
 /* v7: allowance (용돈) wallets with carry-over */
 const alAmt=(p,ym)=>{let a=0;for(const[m,v]of p.h)if(m<=ym)a=v;return a};
 const alSpent=(p,ym)=>S.entries.filter(e=>e.w===p.id&&mk(e.date)===ym).reduce((s,e)=>s+e.amt,0);
-function alBal(p,ym){if(ym<p.start)return{cin:0,al:0,sp:0,bal:0};let b=+p.init||0;for(let x=p.start;x<ym;x=addM(x,1))b+=alAmt(p,x)-alSpent(p,x);
- const a=alAmt(p,ym),sp=alSpent(p,ym);return{cin:b,al:a,sp,bal:b+a-sp}}
-const alTot=ym=>S.al.reduce((s,p)=>s+(ym>=p.start?alAmt(p,ym):0),0);
+function alBal(p,ym){if(ym<p.start)return{cin:0,al:0,sp:0,bal:0,ov:0};let b=Math.max(0,+p.init||0);for(let x=p.start;x<ym;x=addM(x,1))b=Math.max(0,b+alAmt(p,x)-alSpent(p,x));
+ const a=alAmt(p,ym),sp=alSpent(p,ym),pool=b+a;return{cin:b,al:a,sp,bal:pool-sp,ov:Math.max(0,sp-pool)}}
+const alTot=ym=>S.al.reduce((s,p)=>{if(ym<p.start)return s;const b=alBal(p,ym);return s+b.al+b.ov},0);
 const alName=id=>(S.al.find(p=>p.id===id)||{n:'?'}).n;
 const alOn=()=>S.al.some(p=>p.h.some(z=>z[1]>0))||S.entries.some(e=>e.w);
-function alMsg(id,ym){const p=S.al.find(x=>x.id===id);if(!p)return'';const b=alBal(p,ym);return `${p.n} 용돈 남음 ${sg(b.bal)}${b.bal<0?' (초과)':''}`}
+function alMsg(id,ym){const p=S.al.find(x=>x.id===id);if(!p)return'';const b=alBal(p,ym);return b.bal<0?`${p.n} 용돈 초과 ${yen(-b.bal)} (이번 달 지출에 반영돼요)`:`${p.n} 용돈 남음 ${yen(b.bal)}`}
 function setW(v){$('#fw').value=v;document.querySelectorAll('.wb').forEach(b=>b.classList.toggle('on',b.dataset.w===v))}
 const wsel=ed=>{if(!alOn())return'';const cur=(ed&&ed.w)||'';return `<div class="w2"><div class="seg" style="margin:0"><input type="hidden" id="fw" value="${cur}">${[['','공동'],...S.al.map(p=>[p.id,p.n+' 용돈'])].map(([v,l])=>`<button type="button" class="wb${cur===v?' on':''}" data-w="${v}" onclick="setW('${v}')">${esc(l)}</button>`).join('')}</div></div>`};
 function setAn(i,v){v=v.trim();if(!v)return render();snap();S.al[i].n=v;save();render()}
 function setAa(i,v){snap();const p=S.al[i],ef=S.eff||S.vm;p.h=p.h.filter(z=>z[0]!==ef);p.h.push([ef,v]);p.h.sort((a,b)=>a[0]<b[0]?-1:1);save();render()}
 function setAs(i,v){if(!v)return render();snap();S.al[i].start=v;save();render()}
 function setAi(i,v){snap();S.al[i].init=v;save();render()}
-const alCard=()=>{const ef=S.eff||S.vm;return `<section class="card"><h2>용돈<small>매달 확보하고 남으면 이월</small></h2><div class="hint" style="margin:0 0 10px">확보액은 매달 지출에 포함돼요. 금액을 바꾸면 위의 ${ef}부터 적용돼요.</div>${S.al.map((p,i)=>`<div class="alp"><div class="grid"><label>이름<input value="${esc(p.n)}" onchange="setAn(${i},this.value)"></label><label>매달 확보액<input type="number" inputmode="numeric" value="${alAmt(p,ef)}" onchange="setAa(${i},+this.value||0)"></label><label>시작 월<input type="month" value="${p.start}" onchange="setAs(${i},this.value)"></label><label>시작 시점 이월액<input type="number" inputmode="numeric" value="${p.init||0}" onchange="setAi(${i},+this.value||0)"></label></div>${p.h.length>1?`<div class="hs">${p.h.map(([m,a])=>(m<'0001'?'처음':m.replace('-','.'))+'~ '+yen(a)).join(' → ')}</div>`:''}</div>`).join('')}</section>`};
+const alCard=()=>{const ef=S.eff||S.vm;return `<section class="card"><h2>용돈<small>매달 확보하고 남으면 이월</small></h2><div class="hint" style="margin:0 0 10px">확보액은 매달 지출에 포함되고, 넘게 쓴 금액은 그 달 지출에 더해져요. 남은 금액은 다음 달로 이월되고 초과분은 이월되지 않아요. 금액을 바꾸면 위의 ${ef}부터 적용돼요.</div>${S.al.map((p,i)=>`<div class="alp"><div class="grid"><label>이름<input value="${esc(p.n)}" onchange="setAn(${i},this.value)"></label><label>매달 확보액<input type="number" inputmode="numeric" value="${alAmt(p,ef)}" onchange="setAa(${i},+this.value||0)"></label><label>시작 월<input type="month" value="${p.start}" onchange="setAs(${i},this.value)"></label><label>시작 시점 이월액<input type="number" inputmode="numeric" value="${p.init||0}" onchange="setAi(${i},+this.value||0)"></label></div>${p.h.length>1?`<div class="hs">${p.h.map(([m,a])=>(m<'0001'?'처음':m.replace('-','.'))+'~ '+yen(a)).join(' → ')}</div>`:''}</div>`).join('')}</section>`};
 const alDash=m=>{const ps=S.al.filter(p=>m>=p.start&&(alAmt(p,m)>0||alSpent(p,m)>0));if(!ps.length)return'';
- return `<section class="card"><h2>${m} 용돈<small>확보 ${yen(alTot(m))}</small></h2>${ps.map(p=>{const b=alBal(p,m),pool=b.cin+b.al,r=pool>0?Math.min(1,b.sp/pool):b.sp?1:0;
-  return `<div class="alp"><div class="rt"><b>${esc(p.n)}</b><b class="${b.bal<0?'up':'dn'}">남음 ${sg(b.bal)}</b></div><div class="bar"><i class="${b.bal<0?'over':r>=.8?'warn':''}" style="width:${r*100}%"></i></div><div class="rs"><span>이월 ${yen(b.cin)}</span><span>확보 ${yen(b.al)}</span><span>사용 ${yen(b.sp)}</span></div></div>`}).join('')}</section>`};
+ return `<section class="card"><h2>${m} 용돈<small>지출 반영 ${yen(alTot(m))}</small></h2>${ps.map(p=>{const b=alBal(p,m),pool=b.cin+b.al,r=pool>0?Math.min(1,b.sp/pool):b.sp?1:0;
+  return `<div class="alp"><div class="rt"><b>${esc(p.n)}</b><b class="${b.bal<0?'up':'dn'}">${b.bal<0?'초과 '+yen(-b.bal):'남음 '+yen(b.bal)}</b></div><div class="bar"><i class="${b.bal<0?'over':r>=.8?'warn':''}" style="width:${r*100}%"></i></div><div class="rs"><span>이월 ${yen(b.cin)}</span><span>확보 ${yen(b.al)}</span><span>사용 ${yen(b.sp)}</span></div>${b.ov?`<div class="hint" style="margin:6px 0 0">초과 ${yen(b.ov)}는 이번 달 지출에 더해져요 · 다음 달은 0부터 시작</div>`:''}</div>`}).join('')}</section>`};
 /* shell */
 const TABS=[['in','입력',vInW],['db','대시보드',vDb],['an','분석',vAn],['ut','광열비',vUt],['bd','예산',vBd],['yr','연간',vYr],['st','설정',vSt]];
 function render(){updUndo();const hw=S.sec==='hw',T=hw?HW:TABS,on=T.find(t=>t[0]===tab)||T[0];tab=on[0];
